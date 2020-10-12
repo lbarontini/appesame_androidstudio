@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView_mem_c"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="50dp"
+        android:text="@string/isMemorized_checkbox"
+        android:textColor="@color/colorTextPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/add_button_c"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/button_roundshape"
+        android:src="@drawable/ic_add_black_24dp"
+        android:tint="@color/colorIcons"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="2dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recicler_view_cmaps"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="30dp"
+        android:paddingBottom="100dp"
+        android:clipToPadding="false"/>
+
+    <ImageView
+        android:id="@+id/empty_recycler_image_c"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tint="@color/colorPrimarylight"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/add_button_c"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_add_document_icon" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

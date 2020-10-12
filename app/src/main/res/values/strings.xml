@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name" translatable="false">Studied!</string>
+    <string name="bottomnav_flash">Flashcards</string>
+    <string name="bottomnav_recordings">Recordings</string>
+    <string name="bottomnav_cmaps">Concept map</string>
+    <string name="bottomnav_exercise">Exercises</string>
+    <string name="dialog_main_text">Choose a file</string>
+    <string name="dialog_title_hint">Title</string>
+    <string name="dialog_uri_text">Uri</string>
+    <string name="dialog_button_search">Search file</string>
+    <string name="dialog_button_ok" translatable="false">OK</string>
+    <string name="dialog_button_cancel">Cancel</string>
+    <string name="dialog_exam_title">enter the new exam name</string>
+    <string name="dialog_cancel_title">Delete the item?</string>
+    <string name="dialog_cancel_message">all the data will be deleted</string>
+    <string name="missing_file">The selected file was deleted or replaced</string>
+    <string name="empty_name_field">Please fill the name field</string>
+    <string name="isMemorized_checkbox">Memorized?</string>
+
+
+</resources>
