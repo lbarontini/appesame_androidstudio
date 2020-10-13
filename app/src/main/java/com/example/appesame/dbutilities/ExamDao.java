@@ -39,8 +39,6 @@ public interface ExamDao {
     @Query("UPDATE flashcard_table SET title = :setTitle, isMemorized = :setMemorized WHERE exam_name like :examName AND uri like :uri")
     void updateFlashcard(String examName, String uri, String setTitle, boolean setMemorized);
 
-
-
     //recording
     @Query("SELECT * from recording_table WHERE recording_table.exam_name like :examName")
     LiveData<List<EntityRecording>> getRecordings(String examName);

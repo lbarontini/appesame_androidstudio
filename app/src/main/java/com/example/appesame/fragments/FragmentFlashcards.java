@@ -133,10 +133,12 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
 
         @Override
         public void OnRowClick(int position) {
-            if(fileOpener(adapterFlashcard.get(position).getUri(),adapterFlashcard.get(position).getType()))
+            if(fileOpener(adapterFlashcard.get(position).getUri(),
+                    adapterFlashcard.get(position).getType()))
             {}
                 else{
-                Toast.makeText(getContext(), R.string.missing_file, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.missing_file,
+                        Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -152,7 +154,8 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
         try {
             Intent openfile = new Intent(Intent.ACTION_VIEW);
             openfile.setDataAndType(Uri.parse(uri), type);
-            openfile.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+            openfile.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                    Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
             Intent intent1 = Intent.createChooser(openfile, "Open With");
             startActivity(intent1);
             return true;

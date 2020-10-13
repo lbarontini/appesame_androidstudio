@@ -14,9 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appesame.R;
 import com.example.appesame.entities.EntityExercise;
-import com.example.appesame.entities.EntityFlashcard;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterExercises extends RecyclerView.Adapter<AdapterExercises.CViewHolder> {

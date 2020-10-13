@@ -8,7 +8,7 @@
     <string name="dialog_title_hint">Titolo</string>
     <string name="dialog_uri_text">Uri</string>
     <string name="dialog_button_search">Cerca File</string>
-    <string name="dialog_button_cancel">Cancella</string>
+    <string name="dialog_button_cancel">Annulla</string>
     <string name="dialog_exam_title">Inserisci il nome del nuovo esame</string>
     <string name="dialog_cancel_title">Cancellare l\' elemento?</string>
     <string name="dialog_cancel_message">tutti i dati saranno cancellati</string>

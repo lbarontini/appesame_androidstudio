@@ -73,12 +73,4 @@ public class MainActivity extends AppCompatActivity {
         };
         navigation.setOnNavigationItemSelectedListener(menuNavigator);
     }
-
-   /* @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-            if(data != null){
-                examName= data.getStringExtra("exam_name");
-        }
-    }*/
 }

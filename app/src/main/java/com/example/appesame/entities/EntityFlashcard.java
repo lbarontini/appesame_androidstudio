@@ -1,12 +1,11 @@
 package com.example.appesame.entities;
 
-import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.PrimaryKey;
+
 
 @Entity(tableName = "flashcard_table",
         primaryKeys = {"exam_name","uri"},

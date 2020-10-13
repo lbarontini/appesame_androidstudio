@@ -94,8 +94,10 @@ public class AddFileDialog extends DialogFragment {
             fileUri = data.getData();
             fileuriTV.setText(fileUri.getPath()+"");
             ContentResolver contentResolver = getActivity().getContentResolver();
-            contentResolver.takePersistableUriPermission(fileUri,Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Cursor returnCursor = contentResolver.query(fileUri, null, null, null, null);
+            contentResolver.takePersistableUriPermission(fileUri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Cursor returnCursor = contentResolver.query(fileUri,
+                    null, null, null, null);
             int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             returnCursor.moveToFirst();
             filenameET.setText(returnCursor.getString(nameIndex));

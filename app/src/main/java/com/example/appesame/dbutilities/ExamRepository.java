@@ -16,12 +16,6 @@ public class ExamRepository {
 
     private ExamDao examDao;
 
-    //private LiveData<List<EntityExam>> listExam;
-    //private LiveData<List<EntityFlashcard>> listFlashcard;
-    private LiveData<List<EntityRecording>> listRecording;
-    private LiveData<List<EntityCmap>> listCmap;
-    private LiveData<List<EntityExercise>> listExercise;
-
     ExamRepository(Application application) {
         ExamDatabase db = ExamDatabase.getDatabase(application);
         examDao = db.examDao();
@@ -29,23 +23,19 @@ public class ExamRepository {
 
     //Get
     LiveData<List<EntityExam>> getExams() {
-        //listExam = examDao.getExams();
         return examDao.getExams();
     }
     LiveData<List<EntityFlashcard>> getFlashcards(String examName) {
         return examDao.getFlashcards(examName);
     }
     LiveData<List<EntityRecording>> getRecordings(String examName) {
-        listRecording = examDao.getRecordings(examName);
-        return listRecording;
+        return examDao.getRecordings(examName);
     }
     LiveData<List<EntityCmap>> getCmaps(String examName) {
-        listCmap = examDao.getCmaps(examName);
-        return listCmap;
+        return examDao.getCmaps(examName);
     }
     LiveData<List<EntityExercise>> getExercise(String examName) {
-        listExercise = examDao.getExercises(examName);
-        return listExercise;
+        return examDao.getExercises(examName);
     }
 
 
