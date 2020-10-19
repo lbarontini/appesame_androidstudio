@@ -13,6 +13,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+//database class implementation
 @Database(entities = {EntityExam.class,
                         EntityFlashcard.class,
                         EntityRecording.class,
@@ -21,8 +22,6 @@ import androidx.room.RoomDatabase;
             version = 1,exportSchema = false)
 
 public abstract class ExamDatabase extends RoomDatabase {
-
-
     public abstract ExamDao examDao();
     private static volatile ExamDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;

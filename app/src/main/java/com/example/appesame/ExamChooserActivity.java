@@ -24,7 +24,7 @@ import com.example.appesame.entities.EntityExam;
 import com.example.appesame.uiutilities.AdapterExams;
 
 import java.util.List;
-
+// first activity on startup
 public class ExamChooserActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewExams;
@@ -46,6 +46,7 @@ public class ExamChooserActivity extends AppCompatActivity {
         adapterExams = new AdapterExams(this);
         recyclerViewExams.setAdapter(adapterExams);
 
+        //handling add button click
         addbtn = findViewById(R.id.add_button_exam);
         addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +76,7 @@ public class ExamChooserActivity extends AppCompatActivity {
         });
 
         adapterExams.setOnItemClickListener(new AdapterExams.OnItemClickListener() {
+            //handling delete button click
             @Override
             public void OnDeleteClick(final int position) {
 
@@ -96,7 +98,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                 });
                 alert.show();
             }
-
+            //handling delete button click
             @Override
             public void OnRowClick(int position) {
                 Intent intentExamName = new Intent(ExamChooserActivity.this, MainActivity.class);

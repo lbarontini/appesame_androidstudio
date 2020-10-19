@@ -38,7 +38,6 @@ public class ExamRepository {
         return examDao.getExercises(examName);
     }
 
-
     //Insert
     void insertExam(final EntityExam entityExam) {
         ExamDatabase.databaseWriteExecutor.execute(new Runnable() {

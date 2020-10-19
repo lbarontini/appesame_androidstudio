@@ -6,7 +6,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 
-
+//database table
 @Entity(tableName = "flashcard_table",
         primaryKeys = {"exam_name","uri"},
         foreignKeys = @ForeignKey(entity = EntityExam.class,

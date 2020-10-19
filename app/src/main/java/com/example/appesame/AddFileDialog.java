@@ -26,7 +26,7 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.material.textfield.TextInputLayout;
 
 import static android.app.Activity.RESULT_OK;
-
+//dialog for adding files
 public class AddFileDialog extends DialogFragment {
 
     private Button actionSearch, actionOk, actionCancel;
@@ -57,6 +57,7 @@ public class AddFileDialog extends DialogFragment {
         actionOk=view.findViewById(R.id.dialog_ok_btn);
         actionCancel=view.findViewById(R.id.dialog_cancel_btn);
 
+        //handling search click
         actionSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,6 +69,7 @@ public class AddFileDialog extends DialogFragment {
             }
         });
 
+        //andlink ok click
         actionOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +82,7 @@ public class AddFileDialog extends DialogFragment {
             }
         });
 
+        //handling cancel click
         actionCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,6 +107,7 @@ public class AddFileDialog extends DialogFragment {
         }
     }
 
+    //interface to override for getting the uri and the file name
     public interface OnInputSelected {
         void sendInput(String filename,Uri fileuri);
     }

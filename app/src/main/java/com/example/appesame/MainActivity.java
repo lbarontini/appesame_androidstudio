@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragmentFlashcards).commit();
         }
 
+        //handling the navigation between fragments
         navigation = findViewById(R.id.bottom_navigation);
         BottomNavigationView.OnNavigationItemSelectedListener menuNavigator = new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

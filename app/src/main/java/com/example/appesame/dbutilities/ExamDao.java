@@ -13,6 +13,7 @@ import com.example.appesame.entities.EntityRecording;
 
 import java.util.List;
 
+//dao interface for using andoridx.room
 @androidx.room.Dao
 public interface ExamDao {
 

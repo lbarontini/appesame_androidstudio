@@ -62,6 +62,7 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
         adapterFlashcard = new AdapterFlashcards(this.getContext());
         recyclerViewFlashcards.setAdapter(adapterFlashcard);
 
+        //handling add button click
         addbtn = view.findViewById(R.id.add_button_f);
         addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +97,7 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
                     }
                 });
 
+        //handling checkbox click
         adapterFlashcard.setOnItemClickListener(new AdapterFlashcards.OnItemClickListener() {
         @Override
         public void OnCheckClick(int position) {
@@ -113,6 +115,7 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
             }
         }
 
+        //handling delete button click
         @Override
         public void OnDeleteClick(final int position) {
             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
@@ -131,6 +134,7 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
             alert.show();
         }
 
+        //handling recyclerwiew row click
         @Override
         public void OnRowClick(int position) {
             if(fileOpener(adapterFlashcard.get(position).getUri(),
@@ -145,11 +149,13 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
         return view;
     }
 
+    //override method of file dialog for adding data to the correct table
     @Override
     public void sendInput(String filename, Uri fileuri) {
         examViewModel.insertFlashcard(new EntityFlashcard(examname,APP_PDF,fileuri+"",filename));
     }
 
+    //launching intent for file opening
     boolean fileOpener(String uri, String type){
         try {
             Intent openfile = new Intent(Intent.ACTION_VIEW);
