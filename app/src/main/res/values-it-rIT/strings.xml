@@ -15,4 +15,5 @@
     <string name="missing_file">Il file selezionato è stato cancellato o spostato</string>
     <string name="empty_name_field">Perfavore riempire il campo nome</string>
     <string name="isMemorized_checkbox">Memorizzato?</string>
+    <string name="empty_file_field">Perfavore scegliere un file</string>
 </resources>

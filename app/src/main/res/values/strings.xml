@@ -16,6 +16,7 @@
     <string name="missing_file">The selected file was deleted or replaced</string>
     <string name="empty_name_field">Please fill the name field</string>
     <string name="isMemorized_checkbox">Memorized?</string>
+    <string name="empty_file_field">Please choose a file</string>
 
 
 </resources>

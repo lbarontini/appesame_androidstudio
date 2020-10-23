@@ -35,14 +35,18 @@ public class AddFileDialog extends DialogFragment {
 
     private Intent searchfile;
     private Uri fileUri;
-    String argValue;
+    private String argValue;
 
-    public OnInputSelected onInputSelected;
+    private OnInputSelected onInputSelected;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        argValue= getArguments().getString("ArgKey");
+        try {
+            argValue = getArguments().getString("ArgKey");
+        }catch (NullPointerException e) {
+
+        }
     }
 
     @Nullable
@@ -69,15 +73,20 @@ public class AddFileDialog extends DialogFragment {
             }
         });
 
-        //andlink ok click
+        //handling ok click
         actionOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (filenameET.getText()+"" == "") {
+                if (filenameET.getText()+"".trim()== "") {
                     Toast.makeText(getContext(), R.string.empty_name_field, Toast.LENGTH_SHORT).show();
-                }else {
+                }else if (fileuriTV.getText()+""== "") {
+                    Toast.makeText(getContext(), R.string.empty_file_field, Toast.LENGTH_SHORT).show();
+                }else{
                     onInputSelected.sendInput(filenameET.getText() + "", fileUri);
-                    getDialog().dismiss();
+                    try {
+                        getDialog().dismiss();
+                    } catch (NullPointerException e){}
+
                 }
             }
         });
@@ -103,6 +112,7 @@ public class AddFileDialog extends DialogFragment {
                     null, null, null, null);
             int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             returnCursor.moveToFirst();
+            if (filenameET.getText()+"".trim() == "")
             filenameET.setText(returnCursor.getString(nameIndex));
         }
     }
