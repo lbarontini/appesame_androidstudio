@@ -16,7 +16,7 @@ import com.example.appesame.fragments.FragmentExercises;
 import com.example.appesame.fragments.FragmentFlashcards;
 import com.example.appesame.fragments.FragmentRecordings;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
+//todo change the layouts for app crash
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView navigation;
