@@ -3,6 +3,7 @@ package com.example.appesame;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.app.Activity;
@@ -15,6 +16,7 @@ import com.example.appesame.fragments.FragmentCmaps;
 import com.example.appesame.fragments.FragmentExercises;
 import com.example.appesame.fragments.FragmentFlashcards;
 import com.example.appesame.fragments.FragmentRecordings;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 //todo change the layouts for app crash
 public class MainActivity extends AppCompatActivity {
@@ -33,9 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
-            examName = extras.getString("exam_name");
-            getSupportActionBar().setTitle(examName);
-
+            examName = extras.getString("exam_name").toUpperCase();
             Bundle bundle = new Bundle();
             bundle.putString("exam_name", examName);
             fragmentFlashcards.setArguments(bundle);
@@ -44,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
             fragmentExercise.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragmentFlashcards).commit();
         }
+        //top app bar show and title set
+        //MaterialToolbar topAppBar = (MaterialToolbar) findViewById(R.id.topAppBar);
+        setSupportActionBar((MaterialToolbar) findViewById(R.id.topAppBar));
+        getSupportActionBar().setTitle(examName);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //handling the navigation between fragments
         navigation = findViewById(R.id.bottom_navigation);

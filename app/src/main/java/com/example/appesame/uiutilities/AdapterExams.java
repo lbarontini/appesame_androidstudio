@@ -14,12 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appesame.R;
 import com.example.appesame.entities.EntityExam;
+import com.example.appesame.entities.StudiedExam;
 
 import java.util.List;
 
 public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHolder> {
 
     private List<EntityExam> entityExamList;
+    private List<StudiedExam> studiedExamList;
     private AdapterExams.OnItemClickListener mlistener;
     private LayoutInflater layoutInflater;
 
@@ -73,26 +75,34 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ExamViewHolder holder, int position) {
-        holder.textView.setText(entityExamList.get(position).getName());
+        //holder.textView.setText(entityExamList.get(position).getName());
+        holder.textView.setText(studiedExamList.get(position).getExamName());
     }
 
     @Override
     public int getItemCount() {
-        if (entityExamList!=null)
-        return entityExamList.size();
+//        if (entityExamList!=null)
+//        return entityExamList.size();
+//        else return 0;
+        if (studiedExamList!=null)
+            return studiedExamList.size();
         else return 0;
+
     }
 
     public void setDataList(List<EntityExam> dataList) {
         this.entityExamList = dataList;
         notifyDataSetChanged();
-        if(dataList.size()==0){
-
-        }
     }
 
-    public EntityExam get(int position) {
-            return entityExamList.get(position);
+    public void setDataListS(List<StudiedExam> dataList) {
+        this.studiedExamList = dataList;
+        notifyDataSetChanged();
+    }
+
+    public StudiedExam get(int position) {
+            //return entityExamList.get(position);
+        return studiedExamList.get(position);
     }
 
     public interface OnItemClickListener {
@@ -102,5 +112,4 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
     public void setOnItemClickListener (OnItemClickListener listener){
         this.mlistener=listener;
     }
-
 }

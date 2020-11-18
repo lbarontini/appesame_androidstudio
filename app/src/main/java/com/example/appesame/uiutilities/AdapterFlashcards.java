@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appesame.R;
 import com.example.appesame.entities.EntityFlashcard;
+import com.example.appesame.entities.StudiedItem;
 
 import java.util.List;
 
@@ -25,7 +26,8 @@ import static androidx.core.content.res.ResourcesCompat.getColor;
 
 public class AdapterFlashcards extends RecyclerView.Adapter<AdapterFlashcards.CViewHolder> {
 
-    private List<EntityFlashcard> dataList;
+    //private List<EntityFlashcard> dataList;
+    private List<StudiedItem> dataList;
     private OnItemClickListener mlistener;
     private LayoutInflater layoutInflater;
 
@@ -42,7 +44,7 @@ public class AdapterFlashcards extends RecyclerView.Adapter<AdapterFlashcards.CV
 
     @Override
     public void onBindViewHolder(@NonNull CViewHolder holder, int position) {
-        holder.textView.setText(dataList.get(position).getTitle());
+        holder.textView.setText(dataList.get(position).getItemName());
         holder.checkBox.setChecked(dataList.get(position).isMemorized());
     }
 
@@ -53,14 +55,15 @@ public class AdapterFlashcards extends RecyclerView.Adapter<AdapterFlashcards.CV
         else return 0;
     }
 
-    public void setDataList(List<EntityFlashcard> dataList) {
+    public void setDataList(List<StudiedItem> dataList) {
         this.dataList = dataList;
         notifyDataSetChanged();
     }
 
-    public EntityFlashcard get(int position) {
+    public StudiedItem get(int position) {
         return dataList.get(position);
     }
+
 
     public interface OnItemClickListener {
         void OnCheckClick(int position);
