@@ -121,7 +121,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                         else {
                             //examViewModel.insertExam(new EntityExam(edittext.getText() + ""));
                             // Add a new exam
-                             user = FirebaseAuth.getInstance().getCurrentUser();
+                            user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
                                 // User is signed in
                             db.collection("Users").document(user.getUid())
@@ -225,6 +225,12 @@ public class ExamChooserActivity extends AppCompatActivity {
 //            }
 //        });
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // User is signed in
@@ -240,7 +246,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                             }
                             List<StudiedExam> examList = new ArrayList<>();
                             for (QueryDocumentSnapshot doc : value) {
-                                    examList.add(doc.toObject(StudiedExam.class));
+                                examList.add(doc.toObject(StudiedExam.class));
                             }
                             adapterExams.setDataListS(examList);
                             if (adapterExams.getItemCount()==0){
@@ -254,14 +260,17 @@ public class ExamChooserActivity extends AppCompatActivity {
                         }
                     });
         } else {
-            // No user is signed in
+            // No user is signed in show alert
+            AlertDialog.Builder alert = new AlertDialog.Builder(ExamChooserActivity.this);
+            alert.setTitle("Login needed");
+            alert.setMessage("you need tobe logged in in order to use this app");
+            alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    dialog.cancel();
+                }
+            });
+            alert.show();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        user = FirebaseAuth.getInstance().getCurrentUser();
     }
 }
 
