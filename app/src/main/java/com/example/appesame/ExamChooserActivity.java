@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +11,9 @@ import androidx.appcompat.app.AlertDialog;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,8 +24,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.appesame.dbutilities.ExamViewModel;
-import com.example.appesame.entities.EntityExam;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.appesame.entities.StudiedExam;
 import com.example.appesame.uiutilities.AdapterExams;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,8 +34,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -48,33 +48,37 @@ public class ExamChooserActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewExams;
     private AdapterExams adapterExams;
-    private ImageButton addbtn;
     private ImageView imageView;
 
     FirebaseUser user;
     // Access a Cloud Firestore instance from your Activity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private MaterialToolbar topAppBar;
     //private ExamViewModel examViewModel;
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.top_app_bar, menu);
+        if (user != null) {
+            Glide.with(this)
+                    .asBitmap()
+                    .load(user.getPhotoUrl())
+                    .centerCrop()
+                    .circleCrop()
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+
+                            menu.getItem(0).setIcon(new BitmapDrawable(getApplicationContext().getResources(), resource));
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
+        }
         return true;
     }
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.action_login:
-//                Toast.makeText(this, "dfgjhgfj", Toast.LENGTH_SHORT).show();
-//                return true;
-//            default:
-//                // If we got here, the user's action was not recognized.
-//                // Invoke the superclass to handle it.
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,22 +92,35 @@ public class ExamChooserActivity extends AppCompatActivity {
         recyclerViewExams.setAdapter(adapterExams);
 
         //top app bar show and button click
-        topAppBar= (MaterialToolbar)findViewById(R.id.topAppBar);
+        MaterialToolbar topAppBar = (MaterialToolbar) findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-             @Override
-             public boolean onMenuItemClick(MenuItem item) {
-                 if (item.getItemId()==R.id.action_login) {
-                     Intent intent= new Intent(ExamChooserActivity.this, LoginActivity.class);
-                     startActivity(intent);
-                     return true;
-                 }
-                 return false;
-             }
-         });
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId()==R.id.action_login) {
+                    LoginDialog loginDialog = new LoginDialog();
+                    //loginDialog.setcony(getc, 1);
+                    //if (getFragmentManager() != null) throw new AssertionError();
+                    loginDialog.show(getSupportFragmentManager(), "login_dialog");
+                    return true;
+                }
+                return false;
+            }
+        });
+//        topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                if (item.getItemId()==R.id.action_login) {
+//                    Intent intent= new Intent(ExamChooserActivity.this, LoginDialog.class);
+//                    startActivity(intent);
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
 
         //handling add button click
-        addbtn = findViewById(R.id.add_button_exam);
+        ImageButton addbtn = findViewById(R.id.add_button_exam);
         addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +136,6 @@ public class ExamChooserActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), R.string.empty_name_field, Toast.LENGTH_SHORT).show();
                         }
                         else {
-                            //examViewModel.insertExam(new EntityExam(edittext.getText() + ""));
                             // Add a new exam
                             user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user != null) {
@@ -204,28 +220,6 @@ public class ExamChooserActivity extends AppCompatActivity {
                 startActivity(intentExamName);
             }
         });
-
-//        examViewModel = new ViewModelProvider(this).get(ExamViewModel.class);
-//        examViewModel.getExams().observe(this, new Observer<List<EntityExam>>() {
-//            @Override
-//            public void onChanged(@Nullable final List<EntityExam> entityExamList) {
-//                if (entityExamList != null) {
-//                        adapterExams.setDataList(entityExamList);
-//                        if (adapterExams.getItemCount()==0){
-//                            imageView.setVisibility(View.VISIBLE);
-//                            recyclerViewExams.setVisibility(View.INVISIBLE);
-//                        }
-//                        else {
-//                            imageView.setVisibility(View.INVISIBLE);
-//                            recyclerViewExams.setVisibility(View.VISIBLE);
-//                        }
-//                }
-//                else
-//                    Log.v("observer Exams", "null");
-//            }
-//        });
-
-
     }
 
     @Override

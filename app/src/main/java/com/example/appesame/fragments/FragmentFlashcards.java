@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -31,6 +33,7 @@ import com.example.appesame.entities.StudiedItem;
 import com.example.appesame.uiutilities.AdapterFlashcards;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -52,7 +55,6 @@ import java.util.List;
 public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInputSelected{
 
     private static String APP_PDF = "application/pdf";
-    private ExamViewModel examViewModel;
 
     private String examname;
 
@@ -64,7 +66,6 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
 
 
 
@@ -130,20 +131,20 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
             });
         }
 
-        //handling add button click
-        view.findViewById(R.id.add_button_f).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isOnline(getContext())) {
-                    AddFileDialog addFileDialog = AddFileDialog.newInstance(APP_PDF);
-                    addFileDialog.setTargetFragment(FragmentFlashcards.this, 1);
-                    assert getFragmentManager() != null;
-                    addFileDialog.show(getFragmentManager(), "add_dialog");
-                }else{
-                    Toast.makeText(getContext(), "you need to be online",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+//        //handling add button click
+//        view.findViewById(R.id.add_button_f).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (isOnline(getContext())) {
+//                    AddFileDialog addFileDialog = AddFileDialog.newInstance(APP_PDF);
+//                    addFileDialog.setTargetFragment(FragmentFlashcards.this, 1);
+//                    assert getFragmentManager() != null;
+//                    addFileDialog.show(getFragmentManager(), "add_dialog");
+//                }else{
+//                    Toast.makeText(getContext(), "you need to be online",Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
 
         //handling recyclerview click
         adapterFlashcard.setOnItemClickListener(new AdapterFlashcards.OnItemClickListener() {
@@ -274,7 +275,8 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
             Intent intent1 = Intent.createChooser(openfile, "Open With");
             startActivity(intent1);
     }
-    //cheking if there is connection
+
+    //checking if there is connection
     private boolean isOnline(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();

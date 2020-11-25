@@ -34,11 +34,12 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/button_rectangle"
-        android:tint="@color/colorPrimaryDark"
+        android:tint="@color/colorIcons"
+        android:src="@drawable/deletebin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/deletebin" />
+        />
 
     <View
         android:id="@+id/divider2"

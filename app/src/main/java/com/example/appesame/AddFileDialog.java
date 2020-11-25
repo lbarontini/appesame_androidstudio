@@ -44,8 +44,8 @@ public class AddFileDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
         try {
             argValue = getArguments().getString("ArgKey");
-        }catch (NullPointerException e) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -61,7 +61,7 @@ public class AddFileDialog extends DialogFragment {
         actionOk=view.findViewById(R.id.dialog_ok_btn);
         actionCancel=view.findViewById(R.id.dialog_cancel_btn);
 
-        //handling search click
+        //handling search file click
         actionSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

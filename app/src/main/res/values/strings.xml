@@ -18,6 +18,7 @@
     <string name="isMemorized_checkbox">Memorized?</string>
     <string name="empty_file_field">Please choose a file</string>
     <string name="server_client_id" translatable="false">152337408575-qp20q3fpa6qnd36slm3g6dlkbokdacou.apps.googleusercontent.com</string>
+    <string name="logout" translatable="false">Logout</string>
 
 
 </resources>
