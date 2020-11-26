@@ -1,169 +1,266 @@
 package com.example.appesame.fragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appesame.AddFileDialog;
+import com.example.appesame.BuildConfig;
 import com.example.appesame.R;
-import com.example.appesame.dbutilities.ExamViewModel;
-import com.example.appesame.entities.EntityExercise;
-import com.example.appesame.entities.EntityFlashcard;
-import com.example.appesame.uiutilities.AdapterExercises;
-import com.example.appesame.uiutilities.AdapterFlashcards;
+import com.example.appesame.entities.StudiedItem;
+import com.example.appesame.uiutilities.AdapterItem;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentExercises extends Fragment implements AddFileDialog.OnInputSelected{
 
-    private static String APP_PDF = "application/pdf";
+    private static String FILE_TYPE = "application/pdf";
+    private static String STORAGE_FOLDER = "Exercises";
 
-    private RecyclerView recyclerViewExercises;
-    private AdapterExercises adapterExercises;
-
-    private ExamViewModel examViewModel;
     private String examname;
 
-    private ImageButton addbtn;
+    private RecyclerView recyclerView;
+    private AdapterItem adapterFlashcard;
     private ImageView imageView;
-    private TextView textView;
 
+    private FirebaseUser user;
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private StorageReference storageRef = storage.getReference();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        examname = getArguments().getString("exam_name") + "";
+        examname = getArguments().getString("exam_name");
+
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_exercises,container,false);
+        final View view = inflater.inflate(R.layout.fragment_items, container, false);
 
-        imageView = view.findViewById(R.id.empty_recycler_image_e);
-        textView = view.findViewById(R.id.textView_mem_e);
+        imageView = view.findViewById(R.id.empty_recycler_image);
 
-        recyclerViewExercises = view.findViewById(R.id.recicler_view_exercises);
-        recyclerViewExercises.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        adapterExercises = new AdapterExercises(this.getContext());
-        recyclerViewExercises.setAdapter(adapterExercises);
+        recyclerView = view.findViewById(R.id.recicler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        adapterFlashcard = new AdapterItem(this.getContext());
+        recyclerView.setAdapter(adapterFlashcard);
 
-        addbtn = view.findViewById(R.id.add_button_e);
-        addbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        final File storagePath = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), examname+"/"+STORAGE_FOLDER);
 
-                AddFileDialog addFileDialog = AddFileDialog.newInstance(APP_PDF);
-                addFileDialog.setTargetFragment(FragmentExercises.this, 1);
-                assert getFragmentManager() != null;
-                addFileDialog.show(getFragmentManager(), "add_dialog");
-            }
-        });
-
-        examViewModel = new ViewModelProvider(getActivity()).get(ExamViewModel.class);
-        examViewModel.getExercises(examname)
-                .observe(getViewLifecycleOwner(), new Observer<List<EntityExercise>>() {
-                    @Override
-                    public void onChanged(@Nullable final List<EntityExercise> entityExerciseList) {
-                        if (entityExerciseList != null) {
-                            adapterExercises.setDataList(entityExerciseList);
-                            if (adapterExercises.getItemCount() == 0) {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            db.collection("Users").document(user.getUid())
+                    .collection("Exams").document(examname)
+                    .collection(STORAGE_FOLDER)
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot value,
+                                            @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.w(this.getClass().toString(), "Listen failed.", e);
+                                return;
+                            }
+                            List<StudiedItem> itemList = new ArrayList<>();
+                            for (QueryDocumentSnapshot doc : value) {
+                                itemList.add(doc.toObject(StudiedItem.class));
+                            }
+                            adapterFlashcard.setDataList(itemList);
+                            if (adapterFlashcard.getItemCount() == 0) {
                                 imageView.setVisibility(View.VISIBLE);
-                                textView.setVisibility(View.INVISIBLE);
-                            }
-                            else {
+                                recyclerView.setVisibility(View.INVISIBLE);
+                            } else {
                                 imageView.setVisibility(View.INVISIBLE);
-                                textView.setVisibility(View.VISIBLE);
+                                recyclerView.setVisibility(View.VISIBLE);
                             }
                         }
-                        else{
-                            Log.v("observer exercise", "null");
-                        }
-                    }
-                });
+                    });
+        } else {
+            // No user is signed in show alert
+            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+            alert.setTitle(R.string.dialog_cancel_title);
+            alert.setMessage("google login needed");
+            alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    dialog.cancel();
+                }
+            });
+        }
 
-        adapterExercises.setOnItemClickListener(new AdapterExercises.OnItemClickListener() {
+        //handling recyclerview click
+        adapterFlashcard.setOnItemClickListener(new AdapterItem.OnItemClickListener() {
+            //handling checkbox click
             @Override
             public void OnCheckClick(int position) {
-                if (adapterExercises.get(position).isMemorized()) {
-                    examViewModel.updateExercise(adapterExercises.get(position).getExamName() + "",
-                            adapterExercises.get(position).getUri() + "",
-                            adapterExercises.get(position).getTitle() + "",
-                            false);
-                } else {
-                    examViewModel.updateExercise(adapterExercises.get(position).getExamName() + "",
-                            adapterExercises.get(position).getUri() + "",
-                            adapterExercises.get(position).getTitle() + "",
-                            true);
+                DocumentReference ItemToUpdate = db.collection("Users").document(user.getUid())
+                        .collection("Exams").document(examname)
+                        .collection(STORAGE_FOLDER)
+                        .document(adapterFlashcard.get(position).getItemName());
+                if (adapterFlashcard.get(position).isMemorized()) {
+                    ItemToUpdate.update("memorized", false);
+                }else{
+                    ItemToUpdate.update("memorized", true);
                 }
             }
-
-        @Override
-        public void OnDeleteClick(final int position) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-                alert.setTitle(R.string.dialog_cancel_title);
-                alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        examViewModel.deleteExercise(examname, adapterExercises.get(position).getTitle()+"");
-                    }
-                });
-
-                alert.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                    }
-                });
-                alert.show();
+            //handling delete button click
+            @Override
+            public void OnDeleteClick(final int position) {
+                if (isOnline(getContext())) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                    alert.setTitle(R.string.dialog_cancel_title);
+                    alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            final File myFile = new File(storagePath, adapterFlashcard.get(position).getItemName());
+                            if (myFile.exists()) {
+                                myFile.delete();
+                            }
+                            storageRef.child(user.getUid() +"/"+examname+"/"+STORAGE_FOLDER+"/" + adapterFlashcard.get(position).getItemName())
+                                    .delete();
+                            db.collection("Users").document(user.getUid())
+                                    .collection("Exams").document(examname)
+                                    .collection(STORAGE_FOLDER)
+                                    .document(adapterFlashcard.get(position).getItemName())
+                                    .delete();
+                        }
+                    });
+                    alert.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.cancel();
+                        }
+                    });
+                    alert.show();
+                }else {
+                    Toast.makeText(getContext(), "you need to be online", Toast.LENGTH_SHORT).show();
+                }
             }
-
-        @Override
-        public void OnRowClick(int position) {
-            if(fileOpener(adapterExercises.get(position).getUri(),adapterExercises.get(position).getType()))
-            {}
-            else{
-                Toast.makeText(getContext(), R.string.missing_file, Toast.LENGTH_SHORT).show();
+            //handling recyclerview row click
+            @Override
+            public void OnRowClick(int position) {
+                // Create directory if not exists
+                if (!storagePath.exists()) {
+                    storagePath.mkdirs();
+                }
+                final File myFile = new File(storagePath, adapterFlashcard.get(position).getItemName());
+                if (myFile.exists()) {
+                    fileOpener(myFile);
+                }else if(isOnline(getContext())){
+                    final StorageReference FileRef = storageRef.child(user.getUid()+"/"+examname+"/"+STORAGE_FOLDER+"/" + adapterFlashcard.get(position).getItemName());
+                    FileRef.getFile(myFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            fileOpener(myFile);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Toast.makeText(getContext(), "Faliure loading file", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else
+                {
+                    Toast.makeText(getContext(), "you need to be online",Toast.LENGTH_SHORT).show();
+                }
             }
-        }
         });
         return view;
     }
 
+    //override method of file dialog for adding data to the correct table
     @Override
-    public void sendInput(String filename, Uri fileuri) {
-        examViewModel.insertExercise(new EntityExercise(examname,APP_PDF,fileuri+"",filename));
+    public void sendInput(final String filename, Uri fileuri) {
+        if (user != null&&isOnline(getContext())) {
+            // Register observers to listen for when the download is done or if it fails
+            storageRef.child(user.getUid()+"/"+examname+"/"+STORAGE_FOLDER+"/"+filename)
+                    .putFile(fileuri)
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Toast.makeText(getContext(), "faliure storage", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        //if the download succeed register observer for database update
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(getContext(), "success storage", Toast.LENGTH_SHORT).show();
+                            db.collection("Users").document(user.getUid())
+                                    .collection("Exams").document(examname)
+                                    .collection(STORAGE_FOLDER).document(filename)
+                                    .set(new StudiedItem(filename), SetOptions.merge())
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(getContext(), "success firestore", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(getContext(), "faliure firestore", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    });
+        } else {
+            Toast.makeText(getContext(), "you need to be online and signed in",Toast.LENGTH_SHORT).show();
+        }
     }
 
-    boolean fileOpener(String uri, String type){
-        try {
-            Intent openfile = new Intent(Intent.ACTION_VIEW);
-            openfile.setDataAndType(Uri.parse(uri), type);
-            openfile.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-            Intent intent1 = Intent.createChooser(openfile, "Open With");
-            startActivity(intent1);
-            return true;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+    //launching intent for file opening
+    private void fileOpener(File file){
+        Uri uri = FileProvider.getUriForFile(getContext(),
+                BuildConfig.APPLICATION_ID + ".provider",
+                file);
+        Intent openfile = new Intent(Intent.ACTION_VIEW);
+        openfile.setDataAndType(uri, FILE_TYPE);
+        openfile.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Intent intent1 = Intent.createChooser(openfile, "Open With");
+        startActivity(intent1);
+    }
+
+    //checking if there is connection
+    private boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        //should check null because in airplane mode it will be null
+        return (netInfo != null && netInfo.isConnected());
     }
 }

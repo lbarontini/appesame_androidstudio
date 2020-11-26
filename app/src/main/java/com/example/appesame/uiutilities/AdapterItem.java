@@ -1,13 +1,10 @@
 package com.example.appesame.uiutilities;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -16,29 +13,25 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appesame.R;
-import com.example.appesame.entities.EntityFlashcard;
 import com.example.appesame.entities.StudiedItem;
 
 import java.util.List;
 
-import static androidx.core.content.res.ResourcesCompat.getColor;
+
+public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
 
 
-public class AdapterFlashcards extends RecyclerView.Adapter<AdapterFlashcards.CViewHolder> {
-
-    //private List<EntityFlashcard> dataList;
     private List<StudiedItem> dataList;
     private OnItemClickListener mlistener;
-    private LayoutInflater layoutInflater;
 
-    public AdapterFlashcards(Context context) {
-        layoutInflater = LayoutInflater.from(context);
+    public AdapterItem(Context context) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
     }
 
     @NonNull
     @Override
     public CViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_flashcard,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_item,parent,false);
         return new CViewHolder(view, mlistener);
     }
 
@@ -85,10 +78,10 @@ public class AdapterFlashcards extends RecyclerView.Adapter<AdapterFlashcards.CV
         public CViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
 
-            textView = itemView.findViewById(R.id.textView_f);
-            checkBox = itemView.findViewById(R.id.checkBox_f);
-            delBtn = itemView.findViewById(R.id.delete_btn_f);
-            RowLayout = itemView.findViewById(R.id.flashcard_row_layout);
+            textView = itemView.findViewById(R.id.textView);
+            checkBox = itemView.findViewById(R.id.checkBox);
+            delBtn = itemView.findViewById(R.id.delete_btn);
+            RowLayout = itemView.findViewById(R.id.row_layout);
 
             RowLayout.setOnClickListener(new View.OnClickListener() {
                 @Override

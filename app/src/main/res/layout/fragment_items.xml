@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recicler_view_flashcard"
+        android:id="@+id/recicler_view"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,13 +16,13 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
-        android:id="@+id/empty_recycler_image_f"
+        android:id="@+id/empty_recycler_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:tint="@color/colorPrimarylight"
         android:visibility="invisible"
         app:srcCompat="@drawable/ic_add_document_icon"
-        app:layout_anchor="@+id/recicler_view_flashcard"
+        app:layout_anchor="@+id/recicler_view"
         app:layout_anchorGravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

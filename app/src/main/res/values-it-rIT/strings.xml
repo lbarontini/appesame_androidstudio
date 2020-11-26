@@ -16,4 +16,6 @@
     <string name="empty_name_field">Perfavore riempire il campo nome</string>
     <string name="isMemorized_checkbox">Memorizzato?</string>
     <string name="empty_file_field">Perfavore scegliere un file</string>
+    <string name="alert_login">Devi aver effettuato il login per utilizzare quest\'app.</string>
+    <string name="openfile_chooser">Apri con</string>
 </resources>

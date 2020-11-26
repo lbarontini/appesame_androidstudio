@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -69,21 +68,17 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
     @NonNull
     @Override
     public ExamViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = layoutInflater.inflate(R.layout.rv_exams,parent,false);
+        View view = layoutInflater.inflate(R.layout.rv_exam,parent,false);
         return new ExamViewHolder(view, mlistener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ExamViewHolder holder, int position) {
-        //holder.textView.setText(entityExamList.get(position).getName());
         holder.textView.setText(studiedExamList.get(position).getExamName());
     }
 
     @Override
     public int getItemCount() {
-//        if (entityExamList!=null)
-//        return entityExamList.size();
-//        else return 0;
         if (studiedExamList!=null)
             return studiedExamList.size();
         else return 0;
@@ -101,7 +96,6 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
     }
 
     public StudiedExam get(int position) {
-            //return entityExamList.get(position);
         return studiedExamList.get(position);
     }
 

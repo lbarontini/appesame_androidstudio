@@ -35,41 +35,20 @@ import com.google.firebase.auth.FirebaseUser;
 //todo change the layouts for app crash
 public class MainActivity extends AppCompatActivity {
 
-    private static String APP_PDF = "application/pdf";
-
-
     private BottomNavigationView navigation;
     private FragmentFlashcards fragmentFlashcards = new FragmentFlashcards();
     private FragmentRecordings fragmentRecordings = new FragmentRecordings();
     private FragmentCmaps fragmentCmaps = new FragmentCmaps();
     private FragmentExercises fragmentExercise = new FragmentExercises();
     private String examName="";
+    private  String fileType = "application/pdf";
 
     Fragment selectedFragment = null;
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.top_app_bar, menu);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (user != null) {
-            Glide.with(this)
-                    .asBitmap()
-                    .load(user.getPhotoUrl())
-                    .centerCrop()
-                    .circleCrop()
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-
-                            menu.getItem(0).setIcon(new BitmapDrawable(getApplicationContext().getResources(), resource));
-                        }
-
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
-                    });
-        }
+            setProPic(menu.getItem(0));
         return true;
     }
 
@@ -91,6 +70,22 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragmentFlashcards).commit();
         }
 
+        MaterialToolbar topAppBar = (MaterialToolbar) findViewById(R.id.topAppBar);
+        setSupportActionBar(topAppBar);
+        topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId()==R.id.action_login) {
+                    LoginDialog loginDialog = new LoginDialog();
+                    loginDialog.show(getSupportFragmentManager(), "login_dialog");
+                    return true;
+                }
+                return false;
+            }
+        });
+        getSupportActionBar().setTitle(examName);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //handling the navigation between fragments
         navigation = findViewById(R.id.bottom_navigation);
         navigation.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -101,15 +96,19 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.botmenu_recordings:
                         selectedFragment = fragmentRecordings;
+                        fileType= "audio/*";
                         break;
                     case R.id.botmenu_cmaps:
                         selectedFragment = fragmentCmaps;
+                        fileType= "image/*";
                         break;
                     case R.id.botmenu_exercise:
                         selectedFragment = fragmentExercise;
+                        fileType= "application/pdf";
                         break;
                     default:
                         selectedFragment = fragmentFlashcards;
+                        fileType= "application/pdf";
                 }
                 if (selectedFragment != null) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
@@ -118,51 +117,60 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //top app bar show and title set
-//        setSupportActionBar((MaterialToolbar) findViewById(R.id.topAppBar));
-//        getSupportActionBar().setTitle(examName);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        MaterialToolbar topAppBar = (MaterialToolbar) findViewById(R.id.topAppBar);
-        setSupportActionBar(topAppBar);
-        topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId()==R.id.action_login) {
-//                    Intent intent= new Intent(MainActivity.this, LoginDialog.class);
-//                    startActivity(intent);
-                    LoginDialog loginDialog = new LoginDialog();
-                    //loginDialog.setcony(getc, 1);
-                    //if (getFragmentManager() != null) throw new AssertionError();
-                    loginDialog.show(getSupportFragmentManager(), "login_dialog");
-                    return true;
-                }
-                return false;
-            }
-        });
-        getSupportActionBar().setTitle(examName);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         //handling add button click
         ImageButton addbtn = findViewById(R.id.add_button_m);
         addbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (isOnline(getApplicationContext())) {
-                        AddFileDialog addFileDialog = AddFileDialog.newInstance(APP_PDF);
-                        addFileDialog.setTargetFragment(selectedFragment, 1);
-                        if (getFragmentManager() != null) throw new AssertionError();
-                        addFileDialog.show(getSupportFragmentManager(), "add_dialog");
-                    }else{
-                        Toast.makeText(getApplicationContext(), "you need to be online",Toast.LENGTH_SHORT).show();
-                    }
+            @Override
+            public void onClick(View v) {
+                if (isOnline(getApplicationContext())) {
+                    AddFileDialog addFileDialog = AddFileDialog.newInstance(fileType);
+                    addFileDialog.setTargetFragment(selectedFragment, 1);
+                    addFileDialog.show(getSupportFragmentManager(), "add_dialog");
+                }else{
+                    Toast.makeText(getApplicationContext(), "you need to be online",Toast.LENGTH_SHORT).show();
                 }
-            });
+            }
+        });
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus){
+            if (FirebaseAuth.getInstance().getCurrentUser()==null){
+                this.finish();
+            }
+        }
+    }
+
     private boolean isOnline(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         //should check null because in airplane mode it will be null
         return (netInfo != null && netInfo.isConnected());
+    }
+
+    private void setProPic(final MenuItem item) {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            Glide.with(this)
+                    .asBitmap()
+                    .load(user.getPhotoUrl())
+                    .centerCrop()
+                    .circleCrop()
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            item.setIcon(new BitmapDrawable(getApplicationContext().getResources(), resource));
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
+        }else{
+            item.setIcon(R.drawable.ic_account_circle_light);
+        }
     }
 }
 

@@ -19,6 +19,8 @@
     <string name="empty_file_field">Please choose a file</string>
     <string name="server_client_id" translatable="false">152337408575-qp20q3fpa6qnd36slm3g6dlkbokdacou.apps.googleusercontent.com</string>
     <string name="logout" translatable="false">Logout</string>
+    <string name="alert_login">You need to be logged in in order to use this app.</string>
+    <string name="openfile_chooser">" Open with"</string>
 
 
 </resources>

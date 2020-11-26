@@ -43,12 +43,11 @@ public class LoginDialog extends DialogFragment {
     private static final int RC_SIGN_IN = 300;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    SignInButton signInButton;
-    Button logOutButton;
-    TextView emailtv;
-    ImageView proPicView;
-    ImageButton dismiss;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private SignInButton signInButton;
+    private Button logOutButton;
+    private TextView emailtv;
+    private ImageView proPicView;
 
 
     @Nullable
@@ -56,15 +55,13 @@ public class LoginDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_login,container, false);
 
-//        // Enable the Up button
-//        setSupportActionBar((MaterialToolbar)findViewById(R.id.topAppBar));
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         signInButton = view.findViewById(R.id.sign_in_button);
         emailtv = view.findViewById(R.id.email);
         proPicView = view.findViewById(R.id.profile_picture);
         logOutButton= view.findViewById(R.id.logout_button);
 
+        //handling the dismiss click
         view.findViewById(R.id.dismiss).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +69,7 @@ public class LoginDialog extends DialogFragment {
             }
         });
 
+        //handling the logout click
         logOutButton.setOnClickListener(new View.OnClickListener(){
               @Override
               public void onClick(View v) {

@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,12 +26,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.appesame.AddFileDialog;
 import com.example.appesame.BuildConfig;
 import com.example.appesame.R;
-import com.example.appesame.dbutilities.ExamViewModel;
 import com.example.appesame.entities.StudiedItem;
-import com.example.appesame.uiutilities.AdapterFlashcards;
+import com.example.appesame.uiutilities.AdapterItem;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -54,12 +50,14 @@ import java.util.List;
 
 public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInputSelected{
 
-    private static String APP_PDF = "application/pdf";
+    private static String FILE_TYPE = "application/pdf";
+    private static String STORAGE_FOLDER = "Flashcards";
+
 
     private String examname;
 
-    private RecyclerView recyclerViewFlashcards;
-    private AdapterFlashcards adapterFlashcard;
+    private RecyclerView recyclerView;
+    private AdapterItem adapterFlashcard;
     private ImageView imageView;
 
     private FirebaseUser user;
@@ -67,36 +65,33 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
     private StorageReference storageRef = storage.getReference();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        examname = getArguments().getString("exam_name") + "";
+        examname = getArguments().getString("exam_name");
 
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_flashcards, container, false);
+        final View view = inflater.inflate(R.layout.fragment_items, container, false);
 
-        imageView = view.findViewById(R.id.empty_recycler_image_f);
-        //TextView textView = view.findViewById(R.id.textView_mem_f);
+        imageView = view.findViewById(R.id.empty_recycler_image);
 
-        recyclerViewFlashcards = view.findViewById(R.id.recicler_view_flashcard);
-        recyclerViewFlashcards.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        adapterFlashcard = new AdapterFlashcards(this.getContext());
-        recyclerViewFlashcards.setAdapter(adapterFlashcard);
+        recyclerView = view.findViewById(R.id.recicler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        adapterFlashcard = new AdapterItem(this.getContext());
+        recyclerView.setAdapter(adapterFlashcard);
 
-        final File storagePath = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "Flashcards");
+        final File storagePath = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), examname+"/"+STORAGE_FOLDER);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // User is signed in
             db.collection("Users").document(user.getUid())
                     .collection("Exams").document(examname)
-                    .collection("Flashcards")
+                    .collection(STORAGE_FOLDER)
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(@Nullable QuerySnapshot value,
@@ -112,10 +107,10 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
                             adapterFlashcard.setDataList(itemList);
                             if (adapterFlashcard.getItemCount() == 0) {
                                 imageView.setVisibility(View.VISIBLE);
-                                recyclerViewFlashcards.setVisibility(View.INVISIBLE);
+                                recyclerView.setVisibility(View.INVISIBLE);
                             } else {
                                 imageView.setVisibility(View.INVISIBLE);
-                                recyclerViewFlashcards.setVisibility(View.VISIBLE);
+                                recyclerView.setVisibility(View.VISIBLE);
                             }
                         }
                     });
@@ -131,34 +126,19 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
             });
         }
 
-//        //handling add button click
-//        view.findViewById(R.id.add_button_f).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (isOnline(getContext())) {
-//                    AddFileDialog addFileDialog = AddFileDialog.newInstance(APP_PDF);
-//                    addFileDialog.setTargetFragment(FragmentFlashcards.this, 1);
-//                    assert getFragmentManager() != null;
-//                    addFileDialog.show(getFragmentManager(), "add_dialog");
-//                }else{
-//                    Toast.makeText(getContext(), "you need to be online",Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-
         //handling recyclerview click
-        adapterFlashcard.setOnItemClickListener(new AdapterFlashcards.OnItemClickListener() {
+        adapterFlashcard.setOnItemClickListener(new AdapterItem.OnItemClickListener() {
             //handling checkbox click
             @Override
             public void OnCheckClick(int position) {
-                DocumentReference FlashcardToUpdate = db.collection("Users").document(user.getUid())
+                DocumentReference ItemToUpdate = db.collection("Users").document(user.getUid())
                                             .collection("Exams").document(examname)
-                                            .collection("Flashcards")
+                                            .collection(STORAGE_FOLDER)
                                             .document(adapterFlashcard.get(position).getItemName());
                 if (adapterFlashcard.get(position).isMemorized()) {
-                    FlashcardToUpdate.update("memorized", false);
+                    ItemToUpdate.update("memorized", false);
                 }else{
-                    FlashcardToUpdate.update("memorized", true);
+                    ItemToUpdate.update("memorized", true);
                 }
             }
             //handling delete button click
@@ -173,11 +153,11 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
                             if (myFile.exists()) {
                                 myFile.delete();
                             }
-                            storageRef.child(user.getUid() + "/flashcard/" + adapterFlashcard.get(position).getItemName())
+                            storageRef.child(user.getUid() +"/"+examname+"/"+STORAGE_FOLDER+"/" + adapterFlashcard.get(position).getItemName())
                                     .delete();
                             db.collection("Users").document(user.getUid())
                                     .collection("Exams").document(examname)
-                                    .collection("Flashcards")
+                                    .collection(STORAGE_FOLDER)
                                     .document(adapterFlashcard.get(position).getItemName())
                                     .delete();
                         }
@@ -203,8 +183,8 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
                 if (myFile.exists()) {
                     fileOpener(myFile);
                     }else if(isOnline(getContext())){
-                    final StorageReference flashcardRef = storageRef.child(user.getUid()+"/flashcard/" + adapterFlashcard.get(position).getItemName());
-                    flashcardRef.getFile(myFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    final StorageReference FileRef = storageRef.child(user.getUid()+"/"+examname+"/"+STORAGE_FOLDER+"/" + adapterFlashcard.get(position).getItemName());
+                    FileRef.getFile(myFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                             fileOpener(myFile);
@@ -223,12 +203,13 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
         });
         return view;
     }
+
     //override method of file dialog for adding data to the correct table
     @Override
     public void sendInput(final String filename, Uri fileuri) {
         if (user != null&&isOnline(getContext())) {
             // Register observers to listen for when the download is done or if it fails
-            storageRef.child(user.getUid()+"/flashcard/"+filename)
+            storageRef.child(user.getUid()+"/"+examname+"/"+STORAGE_FOLDER+"/"+filename)
                     .putFile(fileuri)
                     .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -243,7 +224,7 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
                             Toast.makeText(getContext(), "success storage", Toast.LENGTH_SHORT).show();
                             db.collection("Users").document(user.getUid())
                                     .collection("Exams").document(examname)
-                                    .collection("Flashcards").document(filename)
+                                    .collection(STORAGE_FOLDER).document(filename)
                                     .set(new StudiedItem(filename), SetOptions.merge())
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -270,9 +251,9 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
                     BuildConfig.APPLICATION_ID + ".provider",
                     file);
             Intent openfile = new Intent(Intent.ACTION_VIEW);
-            openfile.setDataAndType(uri, "application/pdf");
+            openfile.setDataAndType(uri, FILE_TYPE);
             openfile.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Intent intent1 = Intent.createChooser(openfile, "Open With");
+            Intent intent1 = Intent.createChooser(openfile, getString(R.string.openfile_chooser));
             startActivity(intent1);
     }
 
