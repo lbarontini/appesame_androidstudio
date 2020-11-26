@@ -12,27 +12,25 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appesame.R;
-import com.example.appesame.entities.EntityExam;
 import com.example.appesame.entities.StudiedExam;
 
 import java.util.List;
 
 public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHolder> {
 
-    private List<EntityExam> entityExamList;
     private List<StudiedExam> studiedExamList;
     private AdapterExams.OnItemClickListener mlistener;
     private LayoutInflater layoutInflater;
 
     public AdapterExams (Context context) { layoutInflater = LayoutInflater.from(context);}
 
-    public class ExamViewHolder extends RecyclerView.ViewHolder {
+    static class ExamViewHolder extends RecyclerView.ViewHolder {
 
         TextView textView;
         ImageButton delBtn;
         ConstraintLayout RowLayout;
 
-        public ExamViewHolder(@NonNull View itemView,final OnItemClickListener listener) {
+        ExamViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
 
             textView= itemView.findViewById(R.id.exam_name_tv);
@@ -85,12 +83,8 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
 
     }
 
-    public void setDataList(List<EntityExam> dataList) {
-        this.entityExamList = dataList;
-        notifyDataSetChanged();
-    }
 
-    public void setDataListS(List<StudiedExam> dataList) {
+    public void setDataList(List<StudiedExam> dataList) {
         this.studiedExamList = dataList;
         notifyDataSetChanged();
     }

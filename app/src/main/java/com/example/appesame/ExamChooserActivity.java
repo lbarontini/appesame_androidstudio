@@ -33,7 +33,6 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.appesame.entities.StudiedExam;
 import com.example.appesame.uiutilities.AdapterExams;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -99,7 +98,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                                 for (QueryDocumentSnapshot doc : value) {
                                     examList.add(doc.toObject(StudiedExam.class));
                                 }
-                                adapterExams.setDataListS(examList);
+                                adapterExams.setDataList(examList);
                                 if (adapterExams.getItemCount() == 0) {
                                     imageView.setVisibility(View.VISIBLE);
                                     recyclerViewExams.setVisibility(View.INVISIBLE);
