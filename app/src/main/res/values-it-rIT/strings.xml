@@ -9,7 +9,7 @@
     <string name="dialog_uri_text">Uri</string>
     <string name="dialog_button_search">Cerca File</string>
     <string name="dialog_button_cancel">Annulla</string>
-    <string name="dialog_exam_title">Inserisci il nome del nuovo esame</string>
+    <string name="dialog_exam_title">Inserisci il nome dell esame</string>
     <string name="dialog_cancel_title">Cancellare l\' elemento?</string>
     <string name="dialog_cancel_message">tutti i dati saranno cancellati</string>
     <string name="missing_file">Il file selezionato è stato cancellato o spostato</string>
@@ -18,4 +18,5 @@
     <string name="empty_file_field">Perfavore scegliere un file</string>
     <string name="alert_login">Devi aver effettuato il login per utilizzare quest\'app.</string>
     <string name="openfile_chooser">Apri con</string>
+    <string name="overflow_name_field">nome troppo lungo</string>
 </resources>

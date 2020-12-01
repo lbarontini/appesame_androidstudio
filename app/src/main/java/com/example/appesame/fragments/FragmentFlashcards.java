@@ -54,12 +54,11 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
     private static String STORAGE_FOLDER = "Flashcards";
 
 
-    private String examname;
+    private String examname, examId;
 
     private RecyclerView recyclerView;
     private AdapterItem adapterFlashcard;
     private ImageView imageView;
-
     private FirebaseUser user;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
@@ -69,7 +68,7 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         examname = getArguments().getString("exam_name");
-
+        examId = getArguments().getString("exam_id");
     }
 
     @Nullable
@@ -153,7 +152,7 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
                             if (myFile.exists()) {
                                 myFile.delete();
                             }
-                            storageRef.child(user.getUid() +"/"+examname+"/"+STORAGE_FOLDER+"/" + adapterFlashcard.get(position).getItemName())
+                            storageRef.child(user.getUid() +"/"+examId+"/"+STORAGE_FOLDER+"/" + adapterFlashcard.get(position).getItemName())
                                     .delete();
                             db.collection("Users").document(user.getUid())
                                     .collection("Exams").document(examname)
@@ -183,7 +182,7 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
                 if (myFile.exists()) {
                     fileOpener(myFile);
                     }else if(isOnline(getContext())){
-                    final StorageReference FileRef = storageRef.child(user.getUid()+"/"+examname+"/"+STORAGE_FOLDER+"/" + adapterFlashcard.get(position).getItemName());
+                    final StorageReference FileRef = storageRef.child(user.getUid()+"/"+examId+"/"+STORAGE_FOLDER+"/" + adapterFlashcard.get(position).getItemName());
                     FileRef.getFile(myFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -209,7 +208,7 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
     public void sendInput(final String filename, Uri fileuri) {
         if (user != null&&isOnline(getContext())) {
             // Register observers to listen for when the download is done or if it fails
-            storageRef.child(user.getUid()+"/"+examname+"/"+STORAGE_FOLDER+"/"+filename)
+            storageRef.child(user.getUid()+"/"+examId+"/"+STORAGE_FOLDER+"/"+filename)
                     .putFile(fileuri)
                     .addOnFailureListener(new OnFailureListener() {
                     @Override

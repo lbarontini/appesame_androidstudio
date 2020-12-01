@@ -1,10 +1,8 @@
 package com.example.appesame;
 
-import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,10 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
-
-import com.google.android.material.textfield.TextInputLayout;
 
 import static android.app.Activity.RESULT_OK;
 //dialog for adding files
@@ -52,10 +47,10 @@ public class AddFileDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.dialog_add,container, false);
+        View view =inflater.inflate(R.layout.dialog_file,container, false);
 
         fileuriTV=view.findViewById(R.id.dialog_uri_tv);
-        filenameET = view.findViewById(R.id.dialog_title_editText);
+        filenameET = view.findViewById(R.id.dialog_name_editText);
 
         actionSearch=view.findViewById(R.id.dialog_search_btn);
         actionOk=view.findViewById(R.id.dialog_ok_btn);

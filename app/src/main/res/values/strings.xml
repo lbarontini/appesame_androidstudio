@@ -10,7 +10,7 @@
     <string name="dialog_button_search">Search file</string>
     <string name="dialog_button_ok" translatable="false">OK</string>
     <string name="dialog_button_cancel">Cancel</string>
-    <string name="dialog_exam_title">enter the new exam name</string>
+    <string name="dialog_exam_title">enter the exam name</string>
     <string name="dialog_cancel_title">Delete the item?</string>
     <string name="dialog_cancel_message">all the data will be deleted</string>
     <string name="missing_file">The selected file was deleted or replaced</string>
@@ -21,6 +21,7 @@
     <string name="logout" translatable="false">Logout</string>
     <string name="alert_login">You need to be logged in in order to use this app.</string>
     <string name="openfile_chooser">" Open with"</string>
+    <string name="overflow_name_field">name too long</string>
 
 
 </resources>

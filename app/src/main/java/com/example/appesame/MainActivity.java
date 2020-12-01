@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentRecordings fragmentRecordings = new FragmentRecordings();
     private FragmentCmaps fragmentCmaps = new FragmentCmaps();
     private FragmentExercises fragmentExercise = new FragmentExercises();
-    private String examName="";
+    private String examName="", examId;
     private  String fileType = "application/pdf";
 
     Fragment selectedFragment = null;
@@ -59,9 +59,11 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
-            examName = extras.getString("exam_name").toUpperCase();
+            examName = extras.getString("exam_name");
+            examId = extras.getString("exam_id");
             Bundle bundle = new Bundle();
             bundle.putString("exam_name", examName);
+            bundle.putString("exam_id", examId);
             fragmentFlashcards.setArguments(bundle);
             fragmentRecordings.setArguments(bundle);
             fragmentCmaps.setArguments(bundle);
