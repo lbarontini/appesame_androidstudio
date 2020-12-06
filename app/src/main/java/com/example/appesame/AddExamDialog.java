@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,17 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.appesame.entities.StudiedExam;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.auth.User;
 
@@ -91,6 +97,8 @@ public class AddExamDialog extends DialogFragment {
         view.findViewById(R.id.dialog_ok_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                 CollectionReference examsCollection=db.collection("Users").document(user.getUid())
+                        .collection("Exams");
                 final EditText nameEditText = view.findViewById(R.id.dialog_name_editText);
                 examName = nameEditText.getText()+"";
                 examName = examName.toUpperCase();
@@ -99,7 +107,7 @@ public class AddExamDialog extends DialogFragment {
                 } else if (examName.trim().equals("")) {
                     textInputLayout.setError(getResources().getString(R.string.empty_name_field));
                     textInputLayout.requestFocus();
-                }else if(examName.length()>15){
+                }else if(examName.length()>15) {
                     textInputLayout.setError(getResources().getString(R.string.overflow_name_field));
                     textInputLayout.requestFocus();
                 } else if (date==null) {
@@ -107,9 +115,8 @@ public class AddExamDialog extends DialogFragment {
                 }else {
                     Timestamp ts= new Timestamp(date);
                     String uniqueID = UUID.randomUUID().toString();
-                    db.collection("Users").document(user.getUid())
-                            .collection("Exams").document(examName)
-                            .set(new StudiedExam(uniqueID,examName,ts,AddExamDialog.this.cfu), SetOptions.merge());
+                    examsCollection.document(examName)
+                            .set(new StudiedExam(uniqueID,examName,ts,AddExamDialog.this.cfu),SetOptions.merge());
                     dismiss();
                 }
             }

@@ -19,4 +19,5 @@
     <string name="alert_login">Devi aver effettuato il login per utilizzare quest\'app.</string>
     <string name="openfile_chooser">Apri con</string>
     <string name="overflow_name_field">nome troppo lungo</string>
+    <string name="used_name">Nome già utilizzato</string>
 </resources>

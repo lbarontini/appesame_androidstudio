@@ -229,9 +229,9 @@ public class ExamChooserActivity extends AppCompatActivity {
 
         //handling recyclerview cliks
         adapterExams.setOnItemClickListener(new AdapterExams.OnItemClickListener() {
-            //handling row click
             @Override
-            public void OnRowClick(int position) {
+            //handling ExamSelect click
+            public void OnExamSelected(int position) {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                     Intent intentExamName = new Intent(ExamChooserActivity.this, MainActivity.class);
                     intentExamName.putExtra("exam_name", adapterExams.get(position).getExamName());
@@ -325,8 +325,11 @@ public class ExamChooserActivity extends AppCompatActivity {
                             if (examNameNew.trim().equals("")) {
                                 textInputLayout.setError(getResources().getString(R.string.empty_name_field));
                                 textInputLayout.requestFocus();
-                            }else if(examNameNew.length()>15){
+                            }else if(examNameNew.length()>15) {
                                 textInputLayout.setError(getResources().getString(R.string.overflow_name_field));
+                                textInputLayout.requestFocus();
+                            }else if (IsSameName(examNameNew)){
+                                textInputLayout.setError(getString(R.string.used_name));
                                 textInputLayout.requestFocus();
                             } else{
                                 final CollectionReference exams = db.collection("Users").document(user.getUid())
@@ -341,12 +344,6 @@ public class ExamChooserActivity extends AppCompatActivity {
                                             if (document.exists()) {
                                                 exams.document(examNameNew).set(document.getData());
                                                 examDoc.delete();
-//                                                exams.document(examNameNew).set(document.getData()).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                    @Override
-//                                                    public void onComplete(@NonNull Task<Void> task) {
-//                                                        examDoc.delete();
-//                                                    }
-//                                                });
                                             }
                                         }
                                     }
@@ -366,6 +363,14 @@ public class ExamChooserActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private boolean IsSameName(String examNameNew) {
+        for (int j=0; j < adapterExams.getItemCount(); j++){
+            if (adapterExams.get(j).getExamName().equals(examNameNew))
+                return true;
+        }
+        return false;
     }
 
     private void setProPic(final MenuItem item) {

@@ -31,8 +31,8 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
     static class ExamViewHolder extends RecyclerView.ViewHolder {
 
         TextView examNameTV, examDateTV;
-        Button CfuButton;
-        CardView RowLayout;
+        Button cfuButton;
+        ImageButton selectButton;
 
         ExamViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
@@ -45,14 +45,15 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
                             listener.OnNameClick(position);
+
                         }
                     }
                 }
             });
 
 
-            CfuButton= itemView.findViewById(R.id.exam_cfu_button);
-            CfuButton.setOnClickListener(new View.OnClickListener() {
+            cfuButton = itemView.findViewById(R.id.exam_cfu_button);
+            cfuButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
@@ -77,14 +78,14 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
                 }
             });
 
-            RowLayout= itemView.findViewById(R.id.exam_row_layout);
-            RowLayout.setOnClickListener(new View.OnClickListener() {
+            selectButton =itemView.findViewById(R.id.select_arrow);
+            selectButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
-                            listener.OnRowClick(position);
+                            listener.OnExamSelected(position);
                         }
                     }
                 }
@@ -108,7 +109,7 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
         holder.examDateTV.setText(fdate);
 
         String cfuString =studiedExamList.get(position).getCfu()+"";
-        holder.CfuButton.setText(cfuString);
+        holder.cfuButton.setText(cfuString);
 
     }
 
@@ -130,7 +131,7 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
     }
 
     public interface OnItemClickListener {
-        void OnRowClick(int position);
+        void OnExamSelected(int position);
         void OnDateClick(int position);
         void OnCfuClick(int position);
         void OnNameClick(int position);

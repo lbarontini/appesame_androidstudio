@@ -22,4 +22,9 @@
         <item name="android:textColor">@color/colorIcons</item>
         <item name="android:backgroundTint">@color/colorPrimary</item>
     </style>
+
+    <style name="ShapeAppearanceOverlay.MyApp.Button.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

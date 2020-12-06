@@ -22,6 +22,7 @@
     <string name="alert_login">You need to be logged in in order to use this app.</string>
     <string name="openfile_chooser">" Open with"</string>
     <string name="overflow_name_field">name too long</string>
+    <string name="used_name">Name already used</string>
 
 
 </resources>
