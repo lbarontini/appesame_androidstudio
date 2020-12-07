@@ -213,13 +213,9 @@ public class ExamChooserActivity extends AppCompatActivity {
                     alert.show();
                 }else {
                     AlertDialog.Builder alert = new AlertDialog.Builder(ExamChooserActivity.this);
-                    alert.setTitle("Connection required");
-                    alert.setMessage("you need to be online to perform this action");
-                    alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            dialog.cancel();
-                        }
-                    });
+                    alert.setTitle(R.string.connection_title)
+                            .setMessage(R.string.connection_message)
+                            .show();
                 }
             }
         };
@@ -397,7 +393,7 @@ public class ExamChooserActivity extends AppCompatActivity {
     }
     private void alertLogin() {
         AlertDialog.Builder alert = new AlertDialog.Builder(ExamChooserActivity.this);
-        alert.setTitle("Login needed");
+        alert.setTitle(R.string.login_title);
         alert.setMessage(R.string.alert_login);
         alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {

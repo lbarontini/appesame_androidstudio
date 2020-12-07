@@ -13,23 +13,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
+import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appesame.AddFileDialog;
 import com.example.appesame.BuildConfig;
+import com.example.appesame.ExamChooserActivity;
 import com.example.appesame.R;
 import com.example.appesame.entities.StudiedItem;
 import com.example.appesame.uiutilities.AdapterItem;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -41,6 +47,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnPausedListener;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -57,8 +65,9 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
     private String examname, examId;
 
     private RecyclerView recyclerView;
-    private AdapterItem adapterFlashcard;
+    private AdapterItem adapterItem;
     private ImageView imageView;
+    private ContentLoadingProgressBar progressIndicator;
     private FirebaseUser user;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private StorageReference storageRef = storage.getReference();
@@ -77,11 +86,11 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
         final View view = inflater.inflate(R.layout.fragment_items, container, false);
 
         imageView = view.findViewById(R.id.empty_recycler_image);
-
+        progressIndicator = view.findViewById(R.id.progressIndicator);
         recyclerView = view.findViewById(R.id.recicler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        adapterFlashcard = new AdapterItem(this.getContext());
-        recyclerView.setAdapter(adapterFlashcard);
+        adapterItem = new AdapterItem(this.getContext());
+        recyclerView.setAdapter(adapterItem);
 
         final File storagePath = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), examname+"/"+STORAGE_FOLDER);
 
@@ -103,8 +112,8 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
                             for (QueryDocumentSnapshot doc : value) {
                                 itemList.add(doc.toObject(StudiedItem.class));
                             }
-                            adapterFlashcard.setDataList(itemList);
-                            if (adapterFlashcard.getItemCount() == 0) {
+                            adapterItem.setDataList(itemList);
+                            if (adapterItem.getItemCount() == 0) {
                                 imageView.setVisibility(View.VISIBLE);
                                 recyclerView.setVisibility(View.INVISIBLE);
                             } else {
@@ -113,28 +122,63 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
                             }
                         }
                     });
-        } else {
-            // No user is signed in show alert
-            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-            alert.setTitle(R.string.dialog_cancel_title);
-            alert.setMessage("google login needed");
-            alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    dialog.cancel();
-                }
-            });
         }
 
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper
+                .SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                    if (isOnline(getContext())) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                        alert.setTitle(R.string.dialog_cancel_title);
+                        alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                final File myFile = new File(storagePath, adapterItem.get(viewHolder.getAdapterPosition()).getItemName());
+                                if (myFile.exists()) {
+                                    myFile.delete();
+                                }
+                                storageRef.child(user.getUid() +"/"+examId+"/"+STORAGE_FOLDER+"/" + adapterItem.get(viewHolder.getAdapterPosition()).getItemName())
+                                        .delete();
+                                db.collection("Users").document(user.getUid())
+                                        .collection("Exams").document(examname)
+                                        .collection(STORAGE_FOLDER)
+                                        .document(adapterItem.get(viewHolder.getAdapterPosition()).getItemName())
+                                        .delete();
+                            }
+                        });
+                        alert.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.cancel();
+                            }
+                        });
+                        alert.show();
+                    }else {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                        alert.setTitle(R.string.connection_title)
+                                .setMessage(R.string.connection_message)
+                                .show();
+                    }
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
         //handling recyclerview click
-        adapterFlashcard.setOnItemClickListener(new AdapterItem.OnItemClickListener() {
+        adapterItem.setOnItemClickListener(new AdapterItem.OnItemClickListener() {
             //handling checkbox click
             @Override
             public void OnCheckClick(int position) {
                 DocumentReference ItemToUpdate = db.collection("Users").document(user.getUid())
                                             .collection("Exams").document(examname)
                                             .collection(STORAGE_FOLDER)
-                                            .document(adapterFlashcard.get(position).getItemName());
-                if (adapterFlashcard.get(position).isMemorized()) {
+                                            .document(adapterItem.get(position).getItemName());
+                if (adapterItem.get(position).isMemorized()) {
                     ItemToUpdate.update("memorized", false);
                 }else{
                     ItemToUpdate.update("memorized", true);
@@ -143,33 +187,7 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
             //handling delete button click
             @Override
             public void OnDeleteClick(final int position) {
-                if (isOnline(getContext())) {
-                    AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-                    alert.setTitle(R.string.dialog_cancel_title);
-                    alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            final File myFile = new File(storagePath, adapterFlashcard.get(position).getItemName());
-                            if (myFile.exists()) {
-                                myFile.delete();
-                            }
-                            storageRef.child(user.getUid() +"/"+examId+"/"+STORAGE_FOLDER+"/" + adapterFlashcard.get(position).getItemName())
-                                    .delete();
-                            db.collection("Users").document(user.getUid())
-                                    .collection("Exams").document(examname)
-                                    .collection(STORAGE_FOLDER)
-                                    .document(adapterFlashcard.get(position).getItemName())
-                                    .delete();
-                        }
-                    });
-                    alert.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            dialog.cancel();
-                        }
-                    });
-                    alert.show();
-                }else {
-                    Toast.makeText(getContext(), "you need to be online", Toast.LENGTH_SHORT).show();
-                }
+
             }
             //handling recyclerview row click
             @Override
@@ -178,11 +196,11 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
                 if (!storagePath.exists()) {
                     storagePath.mkdirs();
                 }
-                final File myFile = new File(storagePath, adapterFlashcard.get(position).getItemName());
+                final File myFile = new File(storagePath, adapterItem.get(position).getItemName());
                 if (myFile.exists()) {
                     fileOpener(myFile);
                     }else if(isOnline(getContext())){
-                    final StorageReference FileRef = storageRef.child(user.getUid()+"/"+examId+"/"+STORAGE_FOLDER+"/" + adapterFlashcard.get(position).getItemName());
+                    final StorageReference FileRef = storageRef.child(user.getUid()+"/"+examId+"/"+STORAGE_FOLDER+"/" + adapterItem.get(position).getItemName());
                     FileRef.getFile(myFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -205,22 +223,30 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
 
     //override method of file dialog for adding data to the correct table
     @Override
-    public void sendInput(final String filename, Uri fileuri) {
+    public void sendInput(final String filename, final Uri fileuri) {
         if (user != null&&isOnline(getContext())) {
             // Register observers to listen for when the download is done or if it fails
             storageRef.child(user.getUid()+"/"+examId+"/"+STORAGE_FOLDER+"/"+filename)
                     .putFile(fileuri)
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                            progressIndicator.show();
+                            progressIndicator.setMax((int)taskSnapshot.getTotalByteCount());
+                            progressIndicator.setProgress((int) taskSnapshot.getBytesTransferred(),true);
+                        }
+                    })
                     .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(getContext(), "faliure storage", Toast.LENGTH_SHORT).show();
-                    }
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Toast.makeText(getContext(), "faliure storage", Toast.LENGTH_SHORT).show();
+                        }
                     })
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         //if the download succeed register observer for database update
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(getContext(), "success storage", Toast.LENGTH_SHORT).show();
                             db.collection("Users").document(user.getUid())
                                     .collection("Exams").document(examname)
                                     .collection(STORAGE_FOLDER).document(filename)
@@ -228,7 +254,7 @@ public class FragmentFlashcards extends Fragment implements AddFileDialog.OnInpu
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Toast.makeText(getContext(), "success firestore", Toast.LENGTH_SHORT).show();
+                                            progressIndicator.hide();
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {

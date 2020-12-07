@@ -57,7 +57,6 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
         return dataList.get(position);
     }
 
-
     public interface OnItemClickListener {
         void OnCheckClick(int position);
         void OnDeleteClick(int position);
@@ -68,7 +67,7 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
         this.mlistener=listener;
     }
 
-    static class CViewHolder extends RecyclerView.ViewHolder{
+    public static class CViewHolder extends RecyclerView.ViewHolder{
 
         TextView textView;
         CheckBox checkBox;

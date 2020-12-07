@@ -23,6 +23,9 @@
     <string name="openfile_chooser">" Open with"</string>
     <string name="overflow_name_field">name too long</string>
     <string name="used_name">Name already used</string>
+    <string name="connection_title">Connection required</string>
+    <string name="connection_message">you need to be online to perform this action</string>
+    <string name="login_title">Login required</string>
 
 
 </resources>
