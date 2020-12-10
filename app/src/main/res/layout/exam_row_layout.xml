@@ -6,12 +6,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     card_view:cardCornerRadius="10dp"
     card_view:cardUseCompatPadding="true"
-    card_view:cardElevation="3dp"
+    card_view:cardElevation="5dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/exam_row_layout"
-    android:layout_marginStart="5dp"
-    android:layout_marginEnd="5dp">
+    android:tooltipText="swipe left to delete"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/static_Layout"
@@ -26,10 +26,11 @@
             android:gravity="center"
             android:textAllCaps="true"
             android:textAppearance="@color/colorTextPrimary"
-            android:textSize="25sp"
-            app:layout_constraintEnd_toStartOf="@+id/select_arrow"
-            app:layout_constraintStart_toEndOf="@id/exam_cfu_button"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="20dp"
+            android:tooltipText="Name of the exam, click to change"/>
 
         <TextView
             android:id="@+id/exam_date_tv"
@@ -38,11 +39,11 @@
             android:gravity="center"
             android:textAllCaps="true"
             android:textAppearance="@color/colorTextSecondary"
-            android:textSize="15sp"
+            android:textSize="13sp"
             app:layout_constraintTop_toBottomOf="@id/exam_name_tv"
             app:layout_constraintStart_toStartOf="@+id/exam_name_tv"
-            app:layout_constraintEnd_toEndOf="@id/exam_name_tv"
-            android:layout_margin="2dp"/>
+            android:layout_margin="2dp"
+            android:tooltipText="Date of the exam, click to change"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/exam_cfu_button"
@@ -54,14 +55,16 @@
             android:insetTop="0dp"
             android:insetRight="0dp"
             android:insetBottom="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="20dp"
             style="?attr/materialButtonOutlinedStyle"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Circle"
-            app:strokeColor="@color/colorPrimarylight"
-            />
+            app:strokeColor="@color/colorAccent"
+            app:layout_constraintEnd_toStartOf="@+id/select_arrow"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:strokeWidth="2dp"
+            android:tooltipText="Number of cfu, click to change"/>
+
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/select_arrow"
             android:layout_width="wrap_content"
@@ -69,12 +72,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:backgroundTint="@color/trans"
+            android:backgroundTint="@color/transparent"
             android:src="@drawable/ic_baseline_arrow_forward_ios_24"
-            android:tint="@color/colorTextPrimary"
-            />
+            android:tint="@color/colorTextPrimary"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
+
 
 
 

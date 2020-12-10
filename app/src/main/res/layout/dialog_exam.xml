@@ -87,8 +87,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:text="select"
-        android:textSize="20sp"
-        android:elevation="2dp"
+        style="@style/Widget.MaterialComponents.Button"
         app:layout_constraintStart_toEndOf="@id/exam_date_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider1"/>
@@ -109,9 +108,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:text="@string/dialog_button_ok"
-        android:textSize="20sp"
-        android:textColor="@color/colorTextPrimary"
-        android:background="@color/trans"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         app:layout_constraintEnd_toStartOf="@+id/dialog_cancel_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
@@ -123,9 +120,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:text="@string/dialog_button_cancel"
-        android:textSize="20sp"
-        android:textColor="@color/colorTextPrimary"
-        android:background="@color/trans"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/dialog_ok_btn"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />

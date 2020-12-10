@@ -4,13 +4,19 @@ import java.util.ArrayList;
 
 public class StudiedItem {
     private String itemName;
+    private String itemId;
     private boolean isMemorized;
 
-    public StudiedItem() {
-    }
-    public StudiedItem(String itemName) {
+    public StudiedItem() {}
+
+    public StudiedItem(String itemId, String itemName) {
+        this.itemId = itemId;
         this.itemName = itemName;
         this.isMemorized=false;
+    }
+
+    public String getItemId() {
+        return itemId;
     }
     public String getItemName() {
         return itemName;

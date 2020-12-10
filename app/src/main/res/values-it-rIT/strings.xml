@@ -18,9 +18,10 @@
     <string name="empty_file_field">Perfavore scegliere un file</string>
     <string name="alert_login">Devi aver effettuato il login per utilizzare quest\'app.</string>
     <string name="openfile_chooser">Apri con</string>
-    <string name="overflow_name_field">nome troppo lungo</string>
+    <string name="overflow_name_field">massimo 10 caratteri perfavore</string>
     <string name="used_name">Nome già utilizzato</string>
     <string name="connection_title">Connessione necessaria</string>
     <string name="connection_message">Devi essere online per effettuare questa azione</string>
     <string name="login_title">Login Necessario</string>
+    <string name="dialog_name_update">Aggiorna il nome</string>
 </resources>

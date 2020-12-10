@@ -31,14 +31,19 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
     @NonNull
     @Override
     public CViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row_layout,parent,false);
         return new CViewHolder(view, mlistener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CViewHolder holder, int position) {
         holder.textView.setText(dataList.get(position).getItemName());
-        holder.checkBox.setChecked(dataList.get(position).isMemorized());
+        holder.check.setChecked(dataList.get(position).isMemorized());
+        if (holder.check.isChecked()){
+            holder.chekedText.setVisibility(View.VISIBLE);
+        }else {
+            holder.chekedText.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -59,8 +64,8 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
 
     public interface OnItemClickListener {
         void OnCheckClick(int position);
-        void OnDeleteClick(int position);
-        void OnRowClick(int position);
+        void OnSelectClick(int position);
+        void OnNameClick(int position);
     }
 
     public void setOnItemClickListener (OnItemClickListener listener){
@@ -69,50 +74,50 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
 
     public static class CViewHolder extends RecyclerView.ViewHolder{
 
-        TextView textView;
-        CheckBox checkBox;
-        ImageButton delBtn;
-        ConstraintLayout RowLayout;
+        TextView textView, chekedText;
+        CheckBox check;
+        ImageButton selectItem;
+
 
         public CViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
 
             textView = itemView.findViewById(R.id.textView);
-            checkBox = itemView.findViewById(R.id.checkBox);
-            delBtn = itemView.findViewById(R.id.delete_btn);
-            RowLayout = itemView.findViewById(R.id.row_layout);
+            check = itemView.findViewById(R.id.check);
+            chekedText = itemView.findViewById(R.id.checktext);
+            selectItem = itemView.findViewById(R.id.select_arrow);
 
-            RowLayout.setOnClickListener(new View.OnClickListener() {
+            selectItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
-                            listener.OnRowClick(position);
+                            listener.OnSelectClick(position);
                         }
                     }
                 }
             });
 
-            checkBox.setOnClickListener(new View.OnClickListener() {
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.OnNameClick(position);
+                        }
+                    }
+                }
+            });
+
+            check.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
                             listener.OnCheckClick(position);
-                        }
-                    }
-                }
-            });
-
-            delBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.OnDeleteClick(position);
                         }
                     }
                 }

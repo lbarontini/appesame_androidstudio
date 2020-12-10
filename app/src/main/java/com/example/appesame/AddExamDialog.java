@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.NumberPicker;
@@ -76,6 +77,13 @@ public class AddExamDialog extends DialogFragment {
                         calendarDialog.dismiss();
                     }
                 });
+                Button buttonCancel= calendarDialog.findViewById(R.id.date_cancel);
+                buttonCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        calendarDialog.dismiss();
+                    }
+                });
                 calendarDialog.show();
             }
         });
@@ -107,7 +115,7 @@ public class AddExamDialog extends DialogFragment {
                 } else if (examName.trim().equals("")) {
                     textInputLayout.setError(getResources().getString(R.string.empty_name_field));
                     textInputLayout.requestFocus();
-                }else if(examName.length()>15) {
+                }else if(examName.length()>10) {
                     textInputLayout.setError(getResources().getString(R.string.overflow_name_field));
                     textInputLayout.requestFocus();
                 } else if (date==null) {

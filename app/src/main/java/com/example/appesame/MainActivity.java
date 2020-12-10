@@ -7,7 +7,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -29,8 +28,14 @@ import com.example.appesame.fragments.FragmentFlashcards;
 import com.example.appesame.fragments.FragmentRecordings;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 //todo change the layouts for app crash
 public class MainActivity extends AppCompatActivity {
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private FragmentCmaps fragmentCmaps = new FragmentCmaps();
     private FragmentExercises fragmentExercise = new FragmentExercises();
     private String examName="", examId;
+    Date examDate;
+    private int examCfu;
     private  String fileType = "application/pdf";
 
     Fragment selectedFragment = null;
@@ -61,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         if(extras !=null) {
             examName = extras.getString("exam_name");
             examId = extras.getString("exam_id");
+            examCfu = extras.getInt("exam_cfu");
+            examDate = new Date(extras.getLong("exam_date"));
             Bundle bundle = new Bundle();
             bundle.putString("exam_name", examName);
             bundle.putString("exam_id", examId);
@@ -87,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
         });
         getSupportActionBar().setTitle(examName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        MaterialTextView examDetailsTv = (MaterialTextView)findViewById(R.id.exam_detail_tv);
+        DateFormat format = new SimpleDateFormat("dd/MMM/yy", Locale.ITALY);
+        examDetailsTv.setText("Date: "+format.format(examDate)+"\nCfu: "+examCfu);
 
         //handling the navigation between fragments
         navigation = findViewById(R.id.bottom_navigation);
@@ -125,9 +137,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isOnline(getApplicationContext())) {
-                    AddFileDialog addFileDialog = AddFileDialog.newInstance(fileType);
-                    addFileDialog.setTargetFragment(selectedFragment, 1);
-                    addFileDialog.show(getSupportFragmentManager(), "add_dialog");
+                    AddItemDialog addItemDialog = AddItemDialog.newInstance(fileType);
+                    addItemDialog.setTargetFragment(selectedFragment, 1);
+                    addItemDialog.show(getSupportFragmentManager(), "add_dialog");
                 }else{
                     Toast.makeText(getApplicationContext(), "you need to be online",Toast.LENGTH_SHORT).show();
                 }

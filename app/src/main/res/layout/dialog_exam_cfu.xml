@@ -11,7 +11,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     android:text="How many CFUs?"
     android:textSize="20sp"
-    android:textColor="@color/colorTextPrimary"
+    android:textColor="@color/colorPrimary"
     app:layout_constraintBottom_toTopOf="@id/cfu_layout"
     android:layout_marginTop="5dp"/>
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -40,9 +40,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/name_cancel"
         android:text="@string/dialog_button_ok"
-        android:textSize="20sp"
-        android:textColor="@color/colorTextPrimary"
-        android:background="@color/trans"/>
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/name_cancel"
@@ -52,8 +50,7 @@
         app:layout_constraintStart_toEndOf="@id/name_ok"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/dialog_button_cancel"
-        android:textSize="20sp"
-        android:textColor="@color/colorTextPrimary"
-        android:background="@color/trans"/>
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

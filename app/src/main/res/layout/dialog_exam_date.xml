@@ -12,7 +12,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Please select a date"
         android:textSize="20sp"
-        android:textColor="@color/colorTextPrimary"
+        android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@id/calendarView"
         android:layout_marginTop="5dp"/>
 
@@ -24,5 +24,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/date_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView"
+        app:layout_constraintEnd_toEndOf="@id/calendarView"
+        android:text="@string/dialog_button_cancel"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

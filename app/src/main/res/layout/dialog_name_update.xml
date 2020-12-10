@@ -10,7 +10,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/dialog_exam_title"
+        android:hint="@string/dialog_name_update"
         android:layout_margin="4dp"
         android:textColorHint="@color/colorAccent"
         app:boxStrokeColor="@color/colorAccent"
@@ -41,9 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/name_cancel"
         android:text="@string/dialog_button_ok"
-        android:textSize="20sp"
-        android:textColor="@color/colorTextPrimary"
-        android:background="@color/trans"/>
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/name_cancel"
@@ -53,9 +51,8 @@
         app:layout_constraintStart_toEndOf="@id/name_ok"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/dialog_button_cancel"
-        android:textSize="20sp"
-        android:textColor="@color/colorTextPrimary"
-        android:background="@color/trans"/>
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

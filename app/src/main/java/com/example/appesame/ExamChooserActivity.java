@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,7 +16,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -39,6 +42,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,6 +62,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
 // first activity on startup
 public class ExamChooserActivity extends AppCompatActivity {
 
@@ -165,9 +170,44 @@ public class ExamChooserActivity extends AppCompatActivity {
                     }
                 });
 
+
+        final Drawable deleteIcon = ContextCompat.getDrawable(getApplicationContext(),
+                R.drawable.deletebin);
+        final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.colorPrimarylight,null));
+
         //handling recyclerview swipes
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper
                 .SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
+                View itemView = viewHolder.itemView;
+                int backgroundCornerOffset = 40; //so background is behind the rounded corners of itemView
+                int backgroundHeightOffset = 30;
+                int backgroundRightOffset = 30;
+
+                int iconMargin = (itemView.getHeight() - deleteIcon.getIntrinsicHeight()) / 2;
+                int iconTop = itemView.getTop() + (itemView.getHeight() - deleteIcon.getIntrinsicHeight()) / 2;
+                int iconBottom = iconTop + deleteIcon.getIntrinsicHeight();
+
+                if (dX < 0) { // Swiping to the left
+                    int iconLeft = itemView.getRight() - iconMargin - deleteIcon.getIntrinsicWidth();
+                    int iconRight = itemView.getRight() - iconMargin;
+                    deleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+
+                    background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
+                            itemView.getTop()+ backgroundHeightOffset,
+                            itemView.getRight()+backgroundRightOffset,
+                            itemView.getBottom()- backgroundHeightOffset);
+                } else { // view is unSwiped
+                    background.setBounds(0, 0, 0, 0);
+                }
+
+                background.draw(c);
+                deleteIcon.draw(c);
+            }
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -179,7 +219,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                 if (isOnline(getApplication())) {
                     final String examName= adapterExams.get(viewHolder.getLayoutPosition()).getExamName();
                     final FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
-                    AlertDialog.Builder alert = new AlertDialog.Builder(ExamChooserActivity.this);
+                    AlertDialog.Builder alert = new MaterialAlertDialogBuilder(ExamChooserActivity.this);
                     alert.setTitle(R.string.dialog_cancel_title);
                     alert.setMessage(R.string.dialog_cancel_message);
                     alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
@@ -212,7 +252,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                     });
                     alert.show();
                 }else {
-                    AlertDialog.Builder alert = new AlertDialog.Builder(ExamChooserActivity.this);
+                    AlertDialog.Builder alert = new MaterialAlertDialogBuilder(ExamChooserActivity.this);
                     alert.setTitle(R.string.connection_title)
                             .setMessage(R.string.connection_message)
                             .show();
@@ -232,6 +272,8 @@ public class ExamChooserActivity extends AppCompatActivity {
                     Intent intentExamName = new Intent(ExamChooserActivity.this, MainActivity.class);
                     intentExamName.putExtra("exam_name", adapterExams.get(position).getExamName());
                     intentExamName.putExtra("exam_id", adapterExams.get(position).getExamId());
+                    intentExamName.putExtra("exam_date",adapterExams.get(position).getDate().toDate().getTime());
+                    intentExamName.putExtra("exam_cfu", adapterExams.get(position).getCfu());
                     startActivity(intentExamName);
                 }
             }
@@ -259,6 +301,13 @@ public class ExamChooserActivity extends AppCompatActivity {
                             DocumentReference exam =db.collection("Users").document(user.getUid())
                                     .collection("Exams").document(examName);
                             exam.update("date",timestamp);
+                            calendarDialog.dismiss();
+                        }
+                    });
+                    Button buttonCancel= calendarDialog.findViewById(R.id.date_cancel);
+                    buttonCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
                             calendarDialog.dismiss();
                         }
                     });
@@ -309,7 +358,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                 else {
                     final String examName = adapterExams.get(position).getExamName();
                     final Dialog nameDialog = new Dialog(ExamChooserActivity.this);
-                    nameDialog.setContentView(R.layout.dialog_exam_name);
+                    nameDialog.setContentView(R.layout.dialog_name_update);
                     final EditText editText =  nameDialog.findViewById(R.id.dialog_name_editText);
                     editText.setText(examName);
                     final TextInputLayout textInputLayout =  nameDialog.findViewById(R.id.dialog_name_input_layout);
@@ -392,7 +441,7 @@ public class ExamChooserActivity extends AppCompatActivity {
         }
     }
     private void alertLogin() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(ExamChooserActivity.this);
+        AlertDialog.Builder alert = new MaterialAlertDialogBuilder(ExamChooserActivity.this);
         alert.setTitle(R.string.login_title);
         alert.setMessage(R.string.alert_login);
         alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {

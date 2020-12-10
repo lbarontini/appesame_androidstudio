@@ -22,7 +22,7 @@ import androidx.fragment.app.DialogFragment;
 
 import static android.app.Activity.RESULT_OK;
 //dialog for adding files
-public class AddFileDialog extends DialogFragment {
+public class AddItemDialog extends DialogFragment {
 
     private Button actionSearch, actionOk, actionCancel;
     private TextView fileuriTV;
@@ -127,11 +127,11 @@ public class AddFileDialog extends DialogFragment {
         }
     }
 
-    public static AddFileDialog newInstance(String Arg) {
-        AddFileDialog addFileDialog =new AddFileDialog();
+    public static AddItemDialog newInstance(String Arg) {
+        AddItemDialog addItemDialog =new AddItemDialog();
         Bundle args = new Bundle();
         args.putString("ArgKey", Arg);
-        addFileDialog.setArguments(args);
-        return addFileDialog;
+        addItemDialog.setArguments(args);
+        return addItemDialog;
     }
 }
