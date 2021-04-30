@@ -19,7 +19,7 @@
             app:expandedTitleMarginStart="40dp"
             app:expandedTitleMarginBottom="28dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:expandedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Expanded"
+            app:expandedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.ExpandedV"
             app:collapsedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Collapsed">
 
             <com.google.android.material.textview.MaterialTextView

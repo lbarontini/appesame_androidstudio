@@ -48,6 +48,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -104,20 +105,37 @@ public class ExamChooserActivity extends AppCompatActivity {
                                     Log.w(this.getClass().toString(), "Listen failed.", e);
                                     return;
                                 }
-                                List<StudiedExam> examList = new ArrayList<>();
-                                for (QueryDocumentSnapshot doc : value) {
-                                    examList.add(doc.toObject(StudiedExam.class));
-                                }
-                                adapterExams.setDataList(examList);
-                                if (adapterExams.getItemCount() == 0) {
-                                    imageView.setVisibility(View.VISIBLE);
-                                    recyclerViewExams.setVisibility(View.INVISIBLE);
-                                } else {
-                                    imageView.setVisibility(View.INVISIBLE);
-                                    recyclerViewExams.setVisibility(View.VISIBLE);
+                                for (DocumentChange dc : value.getDocumentChanges()) {
+                                    StudiedExam newExam = dc.getDocument().toObject(StudiedExam.class);
+                                    int i = adapterExams.getDataList().indexOf(newExam);
+                                    switch (dc.getType()) {
+                                        case ADDED:
+                                            if (i == -1) {
+                                                adapterExams.getDataList().add(newExam);
+                                                adapterExams.notifyItemInserted(adapterExams.getItemCount() - 1);
+                                            } else
+                                                adapterExams.notifyDataSetChanged();
+                                            break;
+                                        case MODIFIED:
+                                            adapterExams.getDataList().set(i, newExam);
+                                            adapterExams.notifyItemChanged(i);
+                                            break;
+                                        case REMOVED:
+                                            adapterExams.getDataList().remove(newExam);
+                                            adapterExams.notifyItemRemoved(i);
+                                            break;
+                                    }
+                                    if (adapterExams.getItemCount() == 0) {
+                                        imageView.setVisibility(View.VISIBLE);
+                                        recyclerViewExams.setVisibility(View.INVISIBLE);
+                                    } else {
+                                        imageView.setVisibility(View.INVISIBLE);
+                                        recyclerViewExams.setVisibility(View.VISIBLE);
+                                    }
                                 }
                             }
                         });
+
             } else if (!flag) {
                 flag = true;
                 alertLogin();
@@ -162,7 +180,6 @@ public class ExamChooserActivity extends AppCompatActivity {
                         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         if (user != null) {
                             AddExamDialog examDialog = new AddExamDialog();
-                            //examDialog.
                             examDialog.show(getSupportFragmentManager(), "exam_dialog");
                         }else {
                             alertLogin();
@@ -217,16 +234,16 @@ public class ExamChooserActivity extends AppCompatActivity {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 if (isOnline(getApplication())) {
-                    final String examName= adapterExams.get(viewHolder.getLayoutPosition()).getExamName();
+                    final String examId= adapterExams.get(viewHolder.getLayoutPosition()).getExamId();
                     final FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
                     AlertDialog.Builder alert = new MaterialAlertDialogBuilder(ExamChooserActivity.this);
                     alert.setTitle(R.string.dialog_cancel_title);
                     alert.setMessage(R.string.dialog_cancel_message);
                     alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            Log.w("deleting",examName);
+                            Log.w("deleting",examId);
                             DocumentReference exam =db.collection("Users").document(user.getUid())
-                                    .collection("Exams").document(examName);
+                                    .collection("Exams").document(examId);
                             deleteFirestoreCollection(exam.collection("Flashcards"));
                             deleteFirestoreCollection(exam.collection("Recordings"));
                             deleteFirestoreCollection(exam.collection("Cmaps"));
@@ -235,14 +252,14 @@ public class ExamChooserActivity extends AppCompatActivity {
                             exam.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Log.w(" firestore exam delete ", examName);
+                                    Log.w(" firestore exam delete ", examId);
                                 }
                             });
 
-                            deleteStorageBuket(storageRef.child(user.getUid() +"/"+examName+"/Flashcards"));
-                            deleteStorageBuket(storageRef.child(user.getUid() +"/"+examName+"/Recordings"));
-                            deleteStorageBuket(storageRef.child(user.getUid() +"/"+examName+"/Cmaps"));
-                            deleteStorageBuket(storageRef.child(user.getUid() +"/"+examName+"/Exercises"));
+                            deleteStorageBuket(storageRef.child(user.getUid() +"/"+examId+"/Flashcards"));
+                            deleteStorageBuket(storageRef.child(user.getUid() +"/"+examId+"/Recordings"));
+                            deleteStorageBuket(storageRef.child(user.getUid() +"/"+examId+"/Cmaps"));
+                            deleteStorageBuket(storageRef.child(user.getUid() +"/"+examId+"/Exercises"));
                         }
                     });
                     alert.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
@@ -284,7 +301,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                 if (user==null)
                     alertLogin();
                 else {
-                    final String examName = adapterExams.get(position).getExamName();
+                    final String examId = adapterExams.get(position).getExamId();
                     final Dialog calendarDialog = new Dialog(ExamChooserActivity.this);
                     final Calendar calendar= Calendar.getInstance();
                     calendarDialog.setContentView(R.layout.dialog_exam_date);
@@ -299,7 +316,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                             Timestamp timestamp = new Timestamp(calendar.getTime());
 
                             DocumentReference exam =db.collection("Users").document(user.getUid())
-                                    .collection("Exams").document(examName);
+                                    .collection("Exams").document(examId);
                             exam.update("date",timestamp);
                             calendarDialog.dismiss();
                         }
@@ -321,7 +338,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                 if (user==null)
                     alertLogin();
                 else {
-                    final String examName = adapterExams.get(position).getExamName();
+                    final String examId = adapterExams.get(position).getExamId();
                     final Dialog cfuDialog = new Dialog(ExamChooserActivity.this);
                     cfuDialog.setContentView(R.layout.dialog_exam_cfu);
                     final NumberPicker numberPicker = cfuDialog.findViewById(R.id.cfu_numpic);
@@ -334,7 +351,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             DocumentReference exam =db.collection("Users").document(user.getUid())
-                                    .collection("Exams").document(examName);
+                                    .collection("Exams").document(examId);
                             exam.update("cfu",numberPicker.getValue());
                             cfuDialog.dismiss();
                         }
@@ -356,6 +373,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                 if (user==null)
                     alertLogin();
                 else {
+                    final String examID = adapterExams.get(position).getExamId();
                     final String examName = adapterExams.get(position).getExamName();
                     final Dialog nameDialog = new Dialog(ExamChooserActivity.this);
                     nameDialog.setContentView(R.layout.dialog_name_update);
@@ -379,20 +397,8 @@ public class ExamChooserActivity extends AppCompatActivity {
                             } else{
                                 final CollectionReference exams = db.collection("Users").document(user.getUid())
                                         .collection("Exams");
-                                final DocumentReference examDoc= exams.document(examName);
-                                examDoc.update("examName", examNameNew);
-                                examDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            DocumentSnapshot document = task.getResult();
-                                            if (document.exists()) {
-                                                exams.document(examNameNew).set(document.getData());
-                                                examDoc.delete();
-                                            }
-                                        }
-                                    }
-                                });
+                                exams.document(examID).
+                                        update("examName", examNameNew);
                                 nameDialog.dismiss();
                             }
                         }

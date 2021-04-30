@@ -125,6 +125,9 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
         this.studiedExamList = dataList;
         notifyDataSetChanged();
     }
+    public List<StudiedExam> getDataList() {
+        return studiedExamList;
+    }
 
     public StudiedExam get(int position) {
         return studiedExamList.get(position);

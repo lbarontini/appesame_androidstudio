@@ -1,5 +1,7 @@
 package com.example.appesame.entities;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 
 public class StudiedItem {
@@ -29,5 +31,14 @@ public class StudiedItem {
     }
     public void setMemorized(boolean isMemorized) {
         this.isMemorized = isMemorized;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof StudiedItem) {
+            if (((StudiedItem) obj).itemId.equals(this.itemId))
+                return true;
+        }
+        return false;
     }
 }

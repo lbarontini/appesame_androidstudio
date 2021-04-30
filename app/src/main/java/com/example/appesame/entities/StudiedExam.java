@@ -1,5 +1,7 @@
 package com.example.appesame.entities;
 
+import androidx.annotation.Nullable;
+
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
@@ -35,5 +37,14 @@ public class StudiedExam {
 
     public String getExamId() {
         return examId;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof StudiedExam) {
+            if (((StudiedExam) obj).examId.equals(this.examId))
+                return true;
+        }
+        return false;
     }
 }

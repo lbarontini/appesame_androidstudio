@@ -20,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import static android.app.Activity.RESULT_OK;
 //dialog for adding files
 public class AddItemDialog extends DialogFragment {
@@ -72,16 +74,31 @@ public class AddItemDialog extends DialogFragment {
         actionOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (filenameET.getText()+"".trim()== "") {
-                    Toast.makeText(getContext(), R.string.empty_name_field, Toast.LENGTH_SHORT).show();
+                final TextInputLayout textInputLayout = v.findViewById(R.id.dialog_name_input_layout);
+                final String itemNameNew = filenameET.getText()+"".trim();
+                if (itemNameNew.equals("")) {
+                    textInputLayout.setError(getResources().getString(R.string.empty_name_field));
+                    textInputLayout.requestFocus();
+                }else if (itemNameNew.length()>=20){
+                    textInputLayout.setError(getString(R.string.overflow_name_field));
+                    textInputLayout.requestFocus();
                 }else if (fileuriTV.getText()+""== "") {
                     Toast.makeText(getContext(), R.string.empty_file_field, Toast.LENGTH_SHORT).show();
                 }else{
-                    onInputSelected.sendInput(filenameET.getText() + "", fileUri);
-                    try {
-                        getDialog().dismiss();
-                    } catch (NullPointerException e){}
-
+                    OnInputSelected.nameState result = onInputSelected.sendInput(filenameET.getText() + "", fileUri);
+                    switch (result) {
+                        case OK:
+                            getDialog().dismiss();
+                            break;
+                        case H_ERROR:
+                            getDialog().dismiss();
+                            break;
+                        case USED: {
+                            textInputLayout.setError(getString(R.string.used_name));;
+                            textInputLayout.requestFocus();
+                        }
+                        break;
+                    }
                 }
             }
         });
@@ -112,11 +129,6 @@ public class AddItemDialog extends DialogFragment {
         }
     }
 
-    //interface to override for getting the uri and the file name
-    public interface OnInputSelected {
-        void sendInput(String filename,Uri fileuri);
-    }
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -133,5 +145,12 @@ public class AddItemDialog extends DialogFragment {
         args.putString("ArgKey", Arg);
         addItemDialog.setArguments(args);
         return addItemDialog;
+    }
+
+
+    //interface to override for getting the uri and the file name
+    public interface OnInputSelected {
+        enum nameState {OK, USED, H_ERROR};
+        nameState sendInput(String filename,Uri fileuri);
     }
 }

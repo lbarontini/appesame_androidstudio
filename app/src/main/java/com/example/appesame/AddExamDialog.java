@@ -100,7 +100,7 @@ public class AddExamDialog extends DialogFragment {
             }
         });
 
-        //handling ok clik
+        //handling ok click
         final TextInputLayout textInputLayout = view.findViewById(R.id.dialog_name_input_layout);
         view.findViewById(R.id.dialog_ok_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +123,7 @@ public class AddExamDialog extends DialogFragment {
                 }else {
                     Timestamp ts= new Timestamp(date);
                     String uniqueID = UUID.randomUUID().toString();
-                    examsCollection.document(examName)
+                    examsCollection.document(uniqueID)
                             .set(new StudiedExam(uniqueID,examName,ts,AddExamDialog.this.cfu),SetOptions.merge());
                     dismiss();
                 }

@@ -2,6 +2,7 @@ package com.example.appesame;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -28,6 +29,7 @@ import com.example.appesame.fragments.FragmentFlashcards;
 import com.example.appesame.fragments.FragmentRecordings;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -141,7 +143,10 @@ public class MainActivity extends AppCompatActivity {
                     addItemDialog.setTargetFragment(selectedFragment, 1);
                     addItemDialog.show(getSupportFragmentManager(), "add_dialog");
                 }else{
-                    Toast.makeText(getApplicationContext(), "you need to be online",Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder alert = new MaterialAlertDialogBuilder(MainActivity.this);
+                    alert.setTitle(R.string.connection_title)
+                            .setMessage(R.string.connection_message)
+                            .show();
                 }
             }
         });

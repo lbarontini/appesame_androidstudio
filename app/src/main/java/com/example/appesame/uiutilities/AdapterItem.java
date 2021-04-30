@@ -58,6 +58,10 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
         notifyDataSetChanged();
     }
 
+    public List<StudiedItem> getDataList() {
+        return this.dataList;
+    }
+
     public StudiedItem get(int position) {
         return dataList.get(position);
     }
