@@ -17,6 +17,7 @@ import com.example.appesame.entities.StudiedExam;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,7 +27,10 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
     private AdapterExams.OnItemClickListener mlistener;
     private LayoutInflater layoutInflater;
 
-    public AdapterExams (Context context) { layoutInflater = LayoutInflater.from(context);}
+    public AdapterExams (Context context) {
+        layoutInflater = LayoutInflater.from(context);
+        studiedExamList= new ArrayList<StudiedExam>();
+    }
 
     static class ExamViewHolder extends RecyclerView.ViewHolder {
 

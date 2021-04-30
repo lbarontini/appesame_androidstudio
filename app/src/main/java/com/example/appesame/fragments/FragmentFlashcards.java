@@ -73,7 +73,6 @@ public class FragmentFlashcards extends Fragment implements AddItemDialog.OnInpu
     private static String FILE_TYPE = "application/pdf";
     private static String STORAGE_FOLDER = "Flashcards";
 
-
     private String examname, examId;
 
     private RecyclerView recyclerView;
@@ -107,7 +106,7 @@ public class FragmentFlashcards extends Fragment implements AddItemDialog.OnInpu
                 R.drawable.deletebin);
         final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.colorPrimarylight,null));
 
-        final File storagePath = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), examname+"/"+STORAGE_FOLDER);
+        final File storagePath = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), examId+"/"+STORAGE_FOLDER);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -159,7 +158,7 @@ public class FragmentFlashcards extends Fragment implements AddItemDialog.OnInpu
                         alert.setTitle(R.string.dialog_cancel_title);
                         alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                final File myFile = new File(storagePath, adapterItem.get(viewHolder.getAdapterPosition()).getItemName());
+                                final File myFile = new File(storagePath, adapterItem.get(viewHolder.getAdapterPosition()).getItemId());
                                 if (myFile.exists()) {
                                     myFile.delete();
                                 }
@@ -200,9 +199,9 @@ public class FragmentFlashcards extends Fragment implements AddItemDialog.OnInpu
                                             .collection(STORAGE_FOLDER)
                                             .document(adapterItem.get(position).getItemId());
                 if (adapterItem.get(position).isMemorized()) {
-                    ItemToUpdate.update("IsMemorized", false);
+                    ItemToUpdate.update("memorized", false);
                 }else{
-                    ItemToUpdate.update("isMemorized", true);
+                    ItemToUpdate.update("memorized", true);
                 }
             }
             //handling recyclerview row click
@@ -239,12 +238,12 @@ public class FragmentFlashcards extends Fragment implements AddItemDialog.OnInpu
                                     Toast.makeText(getContext(), "Faliure loading file", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                }else{
-                    AlertDialog.Builder alert = new MaterialAlertDialogBuilder(getContext());
-                    alert.setTitle(R.string.connection_title)
-                            .setMessage(R.string.connection_message)
-                            .show();
-                }
+                    }else{
+                        AlertDialog.Builder alert = new MaterialAlertDialogBuilder(getContext());
+                        alert.setTitle(R.string.connection_title)
+                                .setMessage(R.string.connection_message)
+                                .show();
+                    }
             }
 
             @Override
@@ -306,6 +305,7 @@ public class FragmentFlashcards extends Fragment implements AddItemDialog.OnInpu
                         }
                         for (DocumentChange dc : value.getDocumentChanges()) {
                             StudiedItem newItem = dc.getDocument().toObject(StudiedItem.class);
+
                             int i = adapterItem.getDataList().indexOf(newItem);
                             switch (dc.getType())
                             {

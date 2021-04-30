@@ -46,6 +46,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -103,7 +104,7 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
                 R.drawable.deletebin);
         final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.colorPrimarylight,null));
 
-        final File storagePath = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), examname+"/"+STORAGE_FOLDER);
+        final File storagePath = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), examId+"/"+STORAGE_FOLDER);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -155,7 +156,7 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
                     alert.setTitle(R.string.dialog_cancel_title);
                     alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            final File myFile = new File(storagePath, adapterItem.get(viewHolder.getAdapterPosition()).getItemName());
+                            final File myFile = new File(storagePath, adapterItem.get(viewHolder.getAdapterPosition()).getItemId());
                             if (myFile.exists()) {
                                 myFile.delete();
                             }
@@ -192,9 +193,9 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
             @Override
             public void OnCheckClick(int position) {
                 DocumentReference ItemToUpdate = db.collection("Users").document(user.getUid())
-                        .collection("Exams").document(examname)
+                        .collection("Exams").document(examId)
                         .collection(STORAGE_FOLDER)
-                        .document(adapterItem.get(position).getItemName());
+                        .document(adapterItem.get(position).getItemId());
                 if (adapterItem.get(position).isMemorized()) {
                     ItemToUpdate.update("memorized", false);
                 }else{
@@ -236,13 +237,17 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
                                 }
                             });
                 }else{
-                    Toast.makeText(getContext(), "you need to be online",Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder alert = new MaterialAlertDialogBuilder(getContext());
+                    alert.setTitle(R.string.connection_title)
+                            .setMessage(R.string.connection_message)
+                            .show();
                 }
             }
 
             @Override
             public void OnNameClick(int position) {
                 final FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
+                final String itemId = adapterItem.get(position).getItemId();
                 final String itemName = adapterItem.get(position).getItemName();
                 final Dialog nameDialog = new Dialog(getContext());
                 nameDialog.setContentView(R.layout.dialog_name_update);
@@ -262,21 +267,9 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
                             textInputLayout.requestFocus();
                         } else{
                             final CollectionReference items = db.collection("Users").document(user.getUid())
-                                    .collection("Exams").document(examname).collection(STORAGE_FOLDER);
-                            final DocumentReference itemDoc= items.document(itemName);
+                                    .collection("Exams").document(examId).collection(STORAGE_FOLDER);
+                            final DocumentReference itemDoc= items.document(itemId);
                             itemDoc.update("itemName", itemNameNew);
-                            itemDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        DocumentSnapshot document = task.getResult();
-                                        if (document.exists()) {
-                                            items.document(itemNameNew).set(document.getData());
-                                            itemDoc.delete();
-                                        }
-                                    }
-                                }
-                            });
                             nameDialog.dismiss();
                         }
                     }
@@ -298,7 +291,7 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
         final ImageView imageView = view.findViewById(R.id.empty_recycler_image);
         // User is signed in
         db.collection("Users").document(user.getUid())
-                .collection("Exams").document(examname)
+                .collection("Exams").document(examId)
                 .collection(STORAGE_FOLDER)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -308,11 +301,31 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
                             Log.w(this.getClass().toString(), "Listen failed.", e);
                             return;
                         }
-                        List<StudiedItem> itemList = new ArrayList<>();
-                        for (QueryDocumentSnapshot doc : value) {
-                            itemList.add(doc.toObject(StudiedItem.class));
+                        for (DocumentChange dc : value.getDocumentChanges()) {
+                            StudiedItem newItem = dc.getDocument().toObject(StudiedItem.class);
+
+                            int i = adapterItem.getDataList().indexOf(newItem);
+                            switch (dc.getType())
+                            {
+                                case ADDED:
+                                    if (i == -1)
+                                    {
+                                        adapterItem.getDataList().add(newItem);
+                                        adapterItem.notifyItemInserted(adapterItem.getItemCount() - 1);
+                                    }
+                                    else
+                                        adapterItem.notifyDataSetChanged();
+                                    break;
+                                case REMOVED:
+                                    adapterItem.getDataList().remove(newItem);
+                                    adapterItem.notifyItemRemoved(i);
+                                    break;
+                                case MODIFIED:
+                                    adapterItem.getDataList().set(i,newItem);
+                                    adapterItem.notifyItemChanged(i);
+                                    break;
+                            }
                         }
-                        adapterItem.setDataList(itemList);
                         if (adapterItem.getItemCount() == 0) {
                             imageView.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.INVISIBLE);
@@ -323,54 +336,70 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
                     }
                 });
     }
-
     //override method of file dialog for adding data to the correct table
     @Override
-    public void sendInput(final String filename, final Uri fileuri) {
-        if (user != null&&isOnline(getContext())) {
-            // Register observers to listen for when the download is done or if it fails
-            final String uniqueID = UUID.randomUUID().toString();
-            storageRef.child(user.getUid()+"/"+examId+"/"+STORAGE_FOLDER+"/"+uniqueID)
-                    .putFile(fileuri)
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                            progressIndicator.show();
-                            progressIndicator.setMax((int)taskSnapshot.getTotalByteCount());
-                            progressIndicator.setProgress((int) taskSnapshot.getBytesTransferred(),true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            Toast.makeText(getContext(), "faliure storage", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        //if the download succeed register observer for database update
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            db.collection("Users").document(user.getUid())
-                                    .collection("Exams").document(examname)
-                                    .collection(STORAGE_FOLDER).document(filename)
-                                    .set(new StudiedItem(uniqueID, filename), SetOptions.merge())
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            progressIndicator.hide();
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(getContext(), "faliure firestore", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        }
-                    });
-        } else {
-            Toast.makeText(getContext(), "you need to be online and signed in",Toast.LENGTH_SHORT).show();
+    public nameState sendInput(final String filename, final Uri fileuri) {
+        if (isOnline(getContext())) {
+            if (user != null) {
+                if (!IsSameName(filename)) {
+                    // Register observers to listen for when the download is done or if it fails
+                    final String uniqueID = UUID.randomUUID().toString();
+                    storageRef.child(user.getUid() + "/" + examId + "/" + STORAGE_FOLDER + "/" + uniqueID)
+                            .putFile(fileuri)
+                            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                    //double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    progressIndicator.show();
+                                    progressIndicator.setMax((int) taskSnapshot.getTotalByteCount());
+                                    progressIndicator.setProgress((int) taskSnapshot.getBytesTransferred(), true);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    Toast.makeText(getContext(), "faliure storage", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                //if the download succeed register observer for database update
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    db.collection("Users").document(user.getUid())
+                                            .collection("Exams").document(examId)
+                                            .collection(STORAGE_FOLDER).document(uniqueID)
+                                            .set(new StudiedItem(uniqueID, filename), SetOptions.merge())
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    progressIndicator.hide();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(getContext(), "faliure firestore", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                }
+                            });
+                    return nameState.OK;
+                }else{
+                    return nameState.USED;
+                }
+            }else{
+                AlertDialog.Builder alert = new MaterialAlertDialogBuilder(this.getContext());
+                alert.setTitle(R.string.login_title)
+                        .setMessage(R.string.alert_login)
+                        .show();
+                return nameState.H_ERROR;
+            }
+        }else {
+            AlertDialog.Builder alert = new MaterialAlertDialogBuilder(this.getContext());
+            alert.setTitle(R.string.connection_title)
+                    .setMessage(R.string.connection_message)
+                    .show();
+            return nameState.H_ERROR;
         }
     }
 

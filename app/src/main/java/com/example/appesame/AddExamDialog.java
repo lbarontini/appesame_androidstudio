@@ -36,6 +36,7 @@ import com.google.firebase.firestore.auth.User;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -44,6 +45,8 @@ import java.util.UUID;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class AddExamDialog extends DialogFragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseUser user;
+
     private Date date;
     private int cfu=0;
     private String examName="";
@@ -52,7 +55,7 @@ public class AddExamDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view =inflater.inflate(R.layout.dialog_exam,container, false);
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         //handling date
         final Calendar calendar = Calendar.getInstance(Locale.ITALY);
@@ -120,7 +123,11 @@ public class AddExamDialog extends DialogFragment {
                     textInputLayout.requestFocus();
                 } else if (date==null) {
                     Toast.makeText(getContext(), "Please select a date", Toast.LENGTH_SHORT).show();
-                }else {
+                }else if (IsSameName(examName)){
+                    textInputLayout.setError(getResources().getString(R.string.used_name));
+                    textInputLayout.requestFocus();
+                }
+                else{
                     Timestamp ts= new Timestamp(date);
                     String uniqueID = UUID.randomUUID().toString();
                     examsCollection.document(uniqueID)
@@ -137,5 +144,28 @@ public class AddExamDialog extends DialogFragment {
             }
         });
         return view;
+    }
+
+    boolean IsSameName( String examNewName)
+    {
+        final ArrayList<StudiedExam> list = new ArrayList<StudiedExam>();
+        db.collection("Users").document(user.getUid())
+                .collection("Exams")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                list.add(document.toObject(StudiedExam.class));
+                            }
+                        }
+                    }
+                });
+        for (StudiedExam exam :list) {
+            if (exam.examName.equals(examNewName))
+                return true;
+        }
+        return false;
     }
 }

@@ -108,21 +108,21 @@ public class LoginDialog extends DialogFragment {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d("googlesignin", "signInWithCredential:success");
                         FirebaseUser user = mAuth.getCurrentUser();
-                        db.collection("Users")
-                                .document(user.getUid())
-                                .set(new StudiedUser(user.getDisplayName()),SetOptions.merge())
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(getContext(), "success", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getContext(), "insuccess", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+//                        db.collection("Users")
+//                                .document(user.getUid())
+//                                .set(new StudiedUser(user.getDisplayName()),SetOptions.merge())
+//                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    @Override
+//                                    public void onSuccess(Void aVoid) {
+//                                        Toast.makeText(getContext(), "success", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                })
+//                                .addOnFailureListener(new OnFailureListener() {
+//                                    @Override
+//                                    public void onFailure(@NonNull Exception e) {
+//                                        Toast.makeText(getContext(), "insuccess", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                });
                         updateUI(user);
                     } else {
                         // If sign in fails, display a message to the user.

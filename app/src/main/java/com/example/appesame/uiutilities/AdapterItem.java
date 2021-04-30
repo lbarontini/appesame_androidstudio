@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.appesame.R;
 import com.example.appesame.entities.StudiedItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,6 +27,7 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
 
     public AdapterItem(Context context) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
+        dataList = new ArrayList<StudiedItem>();
     }
 
     @NonNull

@@ -26,9 +26,9 @@
             <ImageView
                 app:expandedTitleGravity="center_horizontal"
                 android:id="@+id/logo"
-                android:layout_width="269dp"
-                android:layout_height="73dp"
-                android:src="@drawable/bannertest"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/logo"
                 android:layout_gravity="center_horizontal"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="-1"

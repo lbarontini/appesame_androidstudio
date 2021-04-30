@@ -3,6 +3,7 @@ package com.example.appesame.entities;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.PropertyName;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,9 +11,14 @@ import java.util.Date;
 import java.util.List;
 
 public class StudiedExam {
-    private String  examName,examId;
-    private Timestamp date;
-    private int cfu;
+    @PropertyName("examName")
+    public String  examName;
+    @PropertyName("examId")
+    public String examId;
+    @PropertyName("date")
+    public Timestamp date;
+    @PropertyName("cfu")
+    public int cfu;
 
     public StudiedExam(){}
 

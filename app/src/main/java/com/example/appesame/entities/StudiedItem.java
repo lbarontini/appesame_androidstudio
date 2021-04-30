@@ -2,12 +2,18 @@ package com.example.appesame.entities;
 
 import androidx.annotation.Nullable;
 
-import java.util.ArrayList;
+import com.google.firebase.firestore.PropertyName;
 
+import java.util.ArrayList;
 public class StudiedItem {
-    private String itemName;
-    private String itemId;
-    private boolean isMemorized;
+
+    @PropertyName("itemName")
+    public String itemName;
+
+    @PropertyName("itemId")
+    public String itemId;
+
+    public boolean isMemorized;
 
     public StudiedItem() {}
 
@@ -33,10 +39,12 @@ public class StudiedItem {
         this.isMemorized = isMemorized;
     }
 
+
     @Override
     public boolean equals(@Nullable Object obj) {
-        if (obj instanceof StudiedItem) {
-            if (((StudiedItem) obj).itemId.equals(this.itemId))
+        if (obj != null&&obj instanceof StudiedItem){
+            StudiedItem item = (StudiedItem)obj;
+            if (item.itemId.equals(this.itemId))
                 return true;
         }
         return false;
