@@ -17,6 +17,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -50,7 +51,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -60,9 +60,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 // first activity on startup
 public class ExamChooserActivity extends AppCompatActivity {
@@ -164,8 +162,8 @@ public class ExamChooserActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId()==R.id.action_login) {
-                    LoginDialog loginDialog = new LoginDialog();
-                    loginDialog.show(getSupportFragmentManager(), "login_dialog");
+                    Intent intentLogin = new Intent(ExamChooserActivity.this, LoginActivity.class);
+                    startActivity(intentLogin);
                     return true;
                 }
                 return false;
@@ -286,7 +284,7 @@ public class ExamChooserActivity extends AppCompatActivity {
             //handling ExamSelect click
             public void OnExamSelected(int position) {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    Intent intentExamName = new Intent(ExamChooserActivity.this, MainActivity.class);
+                    Intent intentExamName = new Intent(ExamChooserActivity.this, ItemChooserActivity.class);
                     intentExamName.putExtra("exam_name", adapterExams.get(position).getExamName());
                     intentExamName.putExtra("exam_id", adapterExams.get(position).getExamId());
                     intentExamName.putExtra("exam_date",adapterExams.get(position).getDate().toDate().getTime());
@@ -304,6 +302,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                     final String examId = adapterExams.get(position).getExamId();
                     final Dialog calendarDialog = new Dialog(ExamChooserActivity.this);
                     final Calendar calendar= Calendar.getInstance();
+                    calendarDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     calendarDialog.setContentView(R.layout.dialog_exam_date);
                     CalendarView calendarView =  calendarDialog.findViewById(R.id.calendarView);
                     calendarView.setMinDate(calendar.getTimeInMillis());
@@ -340,6 +339,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                 else {
                     final String examId = adapterExams.get(position).getExamId();
                     final Dialog cfuDialog = new Dialog(ExamChooserActivity.this);
+                    cfuDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     cfuDialog.setContentView(R.layout.dialog_exam_cfu);
                     final NumberPicker numberPicker = cfuDialog.findViewById(R.id.cfu_numpic);
                     numberPicker.setMinValue(0);
@@ -376,6 +376,7 @@ public class ExamChooserActivity extends AppCompatActivity {
                     final String examID = adapterExams.get(position).getExamId();
                     final String examName = adapterExams.get(position).getExamName();
                     final Dialog nameDialog = new Dialog(ExamChooserActivity.this);
+                    nameDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     nameDialog.setContentView(R.layout.dialog_name_update);
                     final EditText editText =  nameDialog.findViewById(R.id.dialog_name_editText);
                     editText.setText(examName);
@@ -453,8 +454,8 @@ public class ExamChooserActivity extends AppCompatActivity {
         alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.cancel();
-                LoginDialog loginDialog = new LoginDialog();
-                loginDialog.show(getSupportFragmentManager(), "login_dialog");
+                Intent intentLogin = new Intent(ExamChooserActivity.this, LoginActivity.class);
+                startActivity(intentLogin);
             }
         });
         alert.show();

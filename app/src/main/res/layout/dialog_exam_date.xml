@@ -3,14 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_rounded_bg">
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Please select a date"
+        android:text="@string/please_select_a_date"
         android:textSize="20sp"
         android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@id/calendarView"

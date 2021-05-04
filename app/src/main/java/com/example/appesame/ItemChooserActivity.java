@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -18,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -39,8 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-//todo change the layouts for app crash
-public class MainActivity extends AppCompatActivity {
+public class ItemChooserActivity extends AppCompatActivity {
 
     private BottomNavigationView navigation;
     private FragmentFlashcards fragmentFlashcards = new FragmentFlashcards();
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_item_chooser);
 
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
@@ -89,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId()==R.id.action_login) {
-                    LoginDialog loginDialog = new LoginDialog();
-                    loginDialog.show(getSupportFragmentManager(), "login_dialog");
+                    Intent intentLogin = new Intent(ItemChooserActivity.this, LoginActivity.class);
+                    startActivity(intentLogin);
                     return true;
                 }
                 return false;
@@ -143,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     addItemDialog.setTargetFragment(selectedFragment, 1);
                     addItemDialog.show(getSupportFragmentManager(), "add_dialog");
                 }else{
-                    AlertDialog.Builder alert = new MaterialAlertDialogBuilder(MainActivity.this);
+                    AlertDialog.Builder alert = new MaterialAlertDialogBuilder(ItemChooserActivity.this);
                     alert.setTitle(R.string.connection_title)
                             .setMessage(R.string.connection_message)
                             .show();

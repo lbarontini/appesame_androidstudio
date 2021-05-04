@@ -52,31 +52,29 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
     public void onBindViewHolder(@NonNull ExamViewHolder holder, int position) {
         StudiedExam exam =studiedExamList.get(position);
         holder.examNameTV.setText(exam.getExamName());
+        holder.cfuButton.setText(exam.getCfu()+"");
 
         DateFormat df = new SimpleDateFormat("dd/MMM/yy", Locale.ITALY);
         String fdate = df.format(exam.getDate().toDate());
         holder.examDateTV.setText(fdate);
 
-        Days result = Days.daysBetween(DateTime.now(), new DateTime(exam.getDate().toDate()));
-        if (result.getDays() >= 0 && result.getDays() <= 2)
+        DateTime examDT = new DateTime(exam.getDate().toDate());
+        Days result = Days.daysBetween(DateTime.now(), examDT);
+        if (examDT.isBeforeNow())
         {
-            holder.card.setCardBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+            holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorTextPrimary));
+        } else if (result.getDays() >= 0 && result.getDays() <= 2)
+        {
+            holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorAccent));
         }
         else if (result.getDays() >= 15)
         {
-            holder.card.setCardBackgroundColor(context.getResources().getColor(R.color.colorPrimarylight));
+            holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorPrimarylight));
         }
         else if (result.getDays() > 2)
         {
-            holder.card.setCardBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
+            holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
         }
-        else if (result.getDays() < 0)
-        {
-            holder.card.setCardBackgroundColor(context.getResources().getColor(R.color.colorIcons));
-        }
-
-        holder.cfuButton.setText(exam.getCfu()+"");
-
     }
 
     @Override

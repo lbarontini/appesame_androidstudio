@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -34,15 +35,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appesame.AddItemDialog;
 import com.example.appesame.BuildConfig;
-import com.example.appesame.ExamChooserActivity;
-import com.example.appesame.MainActivity;
 import com.example.appesame.R;
 import com.example.appesame.entities.StudiedItem;
 import com.example.appesame.uiutilities.AdapterItem;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,11 +47,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FileDownloadTask;
@@ -64,8 +59,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class FragmentFlashcards extends Fragment implements AddItemDialog.OnInputSelected{
@@ -252,6 +245,7 @@ public class FragmentFlashcards extends Fragment implements AddItemDialog.OnInpu
                 final String itemId = adapterItem.get(position).getItemId();
                 final String itemName = adapterItem.get(position).getItemName();
                 final Dialog nameDialog = new Dialog(getContext());
+                nameDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 nameDialog.setContentView(R.layout.dialog_name_update);
                 final EditText editText =  nameDialog.findViewById(R.id.dialog_name_editText);
                 editText.setText(itemName);

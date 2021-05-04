@@ -9,7 +9,7 @@
     <string name="dialog_uri_text">Uri</string>
     <string name="dialog_button_search">Cerca File</string>
     <string name="dialog_button_cancel">Annulla</string>
-    <string name="dialog_exam_title">Inserisci il nome dell esame</string>
+    <string name="dialog_exam_title">Inserisci il nome dell\' esame</string>
     <string name="dialog_cancel_title">Cancellare l\' elemento?</string>
     <string name="dialog_cancel_message">tutti i dati saranno cancellati</string>
     <string name="missing_file">Il file selezionato è stato cancellato o spostato</string>
@@ -24,4 +24,7 @@
     <string name="connection_message">Devi essere online per effettuare questa azione</string>
     <string name="login_title">Login Necessario</string>
     <string name="dialog_name_update">Aggiorna il nome</string>
+    <string name="welcome_message">Benvenuto!</string>
+    <string name="cfu_update">How many CFU?</string>
+    <string name="please_select_a_date">Please select a date</string>
 </resources>

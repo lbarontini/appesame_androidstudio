@@ -18,7 +18,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ItemChooserActivity"
+            android:parentActivityName=".ExamChooserActivity" />
+        <activity
+            android:name=".LoginActivity"
             android:parentActivityName=".ExamChooserActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"

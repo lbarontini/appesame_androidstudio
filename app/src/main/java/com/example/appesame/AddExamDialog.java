@@ -2,6 +2,8 @@ package com.example.appesame;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +57,8 @@ public class AddExamDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view =inflater.inflate(R.layout.dialog_exam,container, false);
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         //handling date
@@ -65,6 +69,7 @@ public class AddExamDialog extends DialogFragment {
             public void onClick(View v) {
                 final Dialog calendarDialog = new Dialog(getContext());
                 calendarDialog.setTitle("please choose a date");
+                calendarDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 calendarDialog.setContentView(R.layout.dialog_exam_date);
                 CalendarView calendarView =  calendarDialog.findViewById(R.id.calendarView);
                 calendarView.setMinDate(calendar.getTimeInMillis());
@@ -122,7 +127,7 @@ public class AddExamDialog extends DialogFragment {
                     textInputLayout.setError(getResources().getString(R.string.overflow_name_field));
                     textInputLayout.requestFocus();
                 } else if (date==null) {
-                    Toast.makeText(getContext(), "Please select a date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.please_select_a_date, Toast.LENGTH_SHORT).show();
                 }else if (IsSameName(examName)){
                     textInputLayout.setError(getResources().getString(R.string.used_name));
                     textInputLayout.requestFocus();
@@ -136,7 +141,7 @@ public class AddExamDialog extends DialogFragment {
                 }
             }
         });
-        //handling cancel clik
+        //handling cancel click
         view.findViewById(R.id.dialog_cancel_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
