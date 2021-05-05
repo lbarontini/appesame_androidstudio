@@ -13,8 +13,10 @@ public class StudiedItem {
     @PropertyName("itemId")
     public String itemId;
 
+    @PropertyName("memorized")
     public boolean isMemorized;
 
+    public boolean isPlaying;
     public StudiedItem() {}
 
     public StudiedItem(String itemId, String itemName) {

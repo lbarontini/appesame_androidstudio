@@ -125,10 +125,10 @@ public class ExamChooserActivity extends AppCompatActivity {
                                     }
                                     if (adapterExams.getItemCount() == 0) {
                                         imageView.setVisibility(View.VISIBLE);
-                                        recyclerViewExams.setVisibility(View.INVISIBLE);
+                                        //recyclerViewExams.setVisibility(View.INVISIBLE);
                                     } else {
                                         imageView.setVisibility(View.INVISIBLE);
-                                        recyclerViewExams.setVisibility(View.VISIBLE);
+                                        //recyclerViewExams.setVisibility(View.VISIBLE);
                                     }
                                 }
                             }
@@ -378,9 +378,9 @@ public class ExamChooserActivity extends AppCompatActivity {
                     final Dialog nameDialog = new Dialog(ExamChooserActivity.this);
                     nameDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     nameDialog.setContentView(R.layout.dialog_name_update);
-                    final EditText editText =  nameDialog.findViewById(R.id.dialog_name_editText);
+                    final EditText editText =  nameDialog.findViewById(R.id.dialog_trec_editText);
                     editText.setText(examName);
-                    final TextInputLayout textInputLayout =  nameDialog.findViewById(R.id.dialog_name_input_layout);
+                    final TextInputLayout textInputLayout =  nameDialog.findViewById(R.id.dialog_trec_input_layout);
                     Button okButton = nameDialog.findViewById(R.id.name_ok);
                     okButton.setOnClickListener(new View.OnClickListener() {
                         @Override

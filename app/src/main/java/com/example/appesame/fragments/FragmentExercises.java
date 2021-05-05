@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -37,10 +38,8 @@ import com.example.appesame.BuildConfig;
 import com.example.appesame.R;
 import com.example.appesame.entities.StudiedItem;
 import com.example.appesame.uiutilities.AdapterItem;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,11 +47,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FileDownloadTask;
@@ -62,8 +59,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class FragmentExercises extends Fragment implements AddItemDialog.OnInputSelected{
@@ -163,9 +158,9 @@ public class FragmentExercises extends Fragment implements AddItemDialog.OnInput
                             storageRef.child(user.getUid() +"/"+examId+"/"+STORAGE_FOLDER+"/" + adapterItem.get(viewHolder.getAdapterPosition()).getItemId())
                                     .delete();
                             db.collection("Users").document(user.getUid())
-                                    .collection("Exams").document(examname)
+                                    .collection("Exams").document(examId)
                                     .collection(STORAGE_FOLDER)
-                                    .document(adapterItem.get(viewHolder.getAdapterPosition()).getItemName())
+                                    .document(adapterItem.get(viewHolder.getAdapterPosition()).getItemId())
                                     .delete();
                         }
                     });
@@ -233,6 +228,7 @@ public class FragmentExercises extends Fragment implements AddItemDialog.OnInput
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
+                                    progressIndicator.hide();
                                     Toast.makeText(getContext(), "Faliure loading file", Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -250,10 +246,11 @@ public class FragmentExercises extends Fragment implements AddItemDialog.OnInput
                 final String itemId = adapterItem.get(position).getItemId();
                 final String itemName = adapterItem.get(position).getItemName();
                 final Dialog nameDialog = new Dialog(getContext());
+                nameDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 nameDialog.setContentView(R.layout.dialog_name_update);
-                final EditText editText =  nameDialog.findViewById(R.id.dialog_name_editText);
+                final EditText editText =  nameDialog.findViewById(R.id.dialog_trec_editText);
                 editText.setText(itemName);
-                final TextInputLayout textInputLayout =  nameDialog.findViewById(R.id.dialog_name_input_layout);
+                final TextInputLayout textInputLayout =  nameDialog.findViewById(R.id.dialog_trec_input_layout);
                 Button okButton = nameDialog.findViewById(R.id.name_ok);
                 okButton.setOnClickListener(new View.OnClickListener() {
                     @Override

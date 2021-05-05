@@ -25,6 +25,8 @@
     <string name="login_title">Login Necessario</string>
     <string name="dialog_name_update">Aggiorna il nome</string>
     <string name="welcome_message">Benvenuto!</string>
-    <string name="cfu_update">How many CFU?</string>
-    <string name="please_select_a_date">Please select a date</string>
+    <string name="cfu_update">Quanti CFU?</string>
+    <string name="please_select_a_date">Perfavore seleziona una data</string>
+    <string name="no_recording_found">Perfavore inizia la registrazione</string>
+    <string name="welcome_msg">benvenuto in Studid!</string>
 </resources>

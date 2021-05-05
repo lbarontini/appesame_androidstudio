@@ -72,4 +72,31 @@
         app:layout_anchor="@+id/fragment_container"
         app:layout_anchorGravity="end|bottom" />
 
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/record_button_m"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="140dp"
+        android:background="@drawable/button_roundshape_accent"
+        android:elevation="2dp"
+        android:src="@drawable/ic_baseline_mic_50"
+        android:tint="@color/colorIcons"
+        app:layout_anchor="@+id/fragment_container"
+        app:layout_anchorGravity="end|bottom"
+        android:visibility="gone"/>
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/picture_button_m"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="140dp"
+        android:background="@drawable/button_roundshape_accent"
+        android:elevation="2dp"
+        android:src="@drawable/ic_baseline_add_a_photo_24"
+        android:tint="@color/colorIcons"
+        app:layout_anchor="@+id/fragment_container"
+        app:layout_anchorGravity="end|bottom"
+        android:visibility="gone"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

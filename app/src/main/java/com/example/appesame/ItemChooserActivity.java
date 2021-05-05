@@ -10,7 +10,9 @@ import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -50,6 +52,7 @@ public class ItemChooserActivity extends AppCompatActivity {
     Date examDate;
     private int examCfu;
     private  String fileType = "application/pdf";
+    ImageButton takeRec,takePic;
 
     Fragment selectedFragment = null;
 
@@ -82,6 +85,9 @@ public class ItemChooserActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragmentFlashcards).commit();
         }
 
+        takeRec = findViewById(R.id.record_button_m);
+        takePic = findViewById(R.id.picture_button_m);
+
         MaterialToolbar topAppBar = (MaterialToolbar) findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
         topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -111,18 +117,26 @@ public class ItemChooserActivity extends AppCompatActivity {
 
                     case R.id.botmenu_recordings:
                         selectedFragment = fragmentRecordings;
+                        takeRec.setVisibility(View.VISIBLE);
+                        takePic.setVisibility(View.GONE);
                         fileType= "audio/*";
                         break;
                     case R.id.botmenu_cmaps:
                         selectedFragment = fragmentCmaps;
+                        takeRec.setVisibility(View.GONE);
+                        takePic.setVisibility(View.VISIBLE);
                         fileType= "image/*";
                         break;
                     case R.id.botmenu_exercise:
                         selectedFragment = fragmentExercise;
+                        takeRec.setVisibility(View.GONE);
+                        takePic.setVisibility(View.GONE);
                         fileType= "application/pdf";
                         break;
                     default:
                         selectedFragment = fragmentFlashcards;
+                        takeRec.setVisibility(View.GONE);
+                        takePic.setVisibility(View.GONE);
                         fileType= "application/pdf";
                 }
                 if (selectedFragment != null) {
@@ -149,6 +163,40 @@ public class ItemChooserActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+            takeRec.setOnClickListener(v -> {
+                if (isOnline(getApplicationContext())) {
+                    TakeRecDialog takeRecDialog = new TakeRecDialog();
+                    Bundle bundle=new Bundle();
+                    bundle.putString("exam_id", examId);
+                    takeRecDialog.setArguments(bundle);
+                    takeRecDialog.setTargetFragment(selectedFragment, 1);
+                    takeRecDialog.show(getSupportFragmentManager(), "take_rec");
+                }else{
+                    AlertDialog.Builder alert = new MaterialAlertDialogBuilder(ItemChooserActivity.this);
+                    alert.setTitle(R.string.connection_title)
+                            .setMessage(R.string.connection_message)
+                            .show();
+                }
+            });
+
+
+        takePic.setOnClickListener(v -> {
+            if (isOnline(getApplicationContext())) {
+                AddItemDialog addItemDialog = AddItemDialog.newInstance(fileType);
+                addItemDialog.setTargetFragment(selectedFragment, 1);
+                addItemDialog.show(getSupportFragmentManager(), "add_dialog");
+            }else{
+                AlertDialog.Builder alert = new MaterialAlertDialogBuilder(ItemChooserActivity.this);
+                alert.setTitle(R.string.connection_title)
+                        .setMessage(R.string.connection_message)
+                        .show();
+            }
+        });
+
+
+
     }
 
     @Override

@@ -158,9 +158,9 @@ public class FragmentFlashcards extends Fragment implements AddItemDialog.OnInpu
                                 storageRef.child(user.getUid() +"/"+examId+"/"+STORAGE_FOLDER+"/" + adapterItem.get(viewHolder.getAdapterPosition()).getItemId())
                                         .delete();
                                 db.collection("Users").document(user.getUid())
-                                        .collection("Exams").document(examname)
+                                        .collection("Exams").document(examId)
                                         .collection(STORAGE_FOLDER)
-                                        .document(adapterItem.get(viewHolder.getAdapterPosition()).getItemName())
+                                        .document(adapterItem.get(viewHolder.getAdapterPosition()).getItemId())
                                         .delete();
                             }
                         });
@@ -228,6 +228,7 @@ public class FragmentFlashcards extends Fragment implements AddItemDialog.OnInpu
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
+                                    progressIndicator.hide();
                                     Toast.makeText(getContext(), "Faliure loading file", Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -247,9 +248,9 @@ public class FragmentFlashcards extends Fragment implements AddItemDialog.OnInpu
                 final Dialog nameDialog = new Dialog(getContext());
                 nameDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 nameDialog.setContentView(R.layout.dialog_name_update);
-                final EditText editText =  nameDialog.findViewById(R.id.dialog_name_editText);
+                final EditText editText =  nameDialog.findViewById(R.id.dialog_trec_editText);
                 editText.setText(itemName);
-                final TextInputLayout textInputLayout =  nameDialog.findViewById(R.id.dialog_name_input_layout);
+                final TextInputLayout textInputLayout =  nameDialog.findViewById(R.id.dialog_trec_input_layout);
                 Button okButton = nameDialog.findViewById(R.id.name_ok);
                 okButton.setOnClickListener(new View.OnClickListener() {
                     @Override

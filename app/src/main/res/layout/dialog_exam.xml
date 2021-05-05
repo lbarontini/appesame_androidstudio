@@ -9,7 +9,7 @@
     android:background="@drawable/dialog_rounded_bg">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/dialog_name_input_layout"
+        android:id="@+id/dialog_trec_input_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/dialog_name_editText"
+            android:id="@+id/dialog_trec_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -46,7 +46,7 @@
         android:textColor="@color/colorTextPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/cfu_numpic"
-        app:layout_constraintTop_toBottomOf="@+id/dialog_name_input_layout"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_trec_input_layout"
         app:layout_constraintBottom_toBottomOf="@+id/cfu_numpic"
         />
 
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/exam_cfu_tv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dialog_name_input_layout"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_trec_input_layout"
         />
 
     <View

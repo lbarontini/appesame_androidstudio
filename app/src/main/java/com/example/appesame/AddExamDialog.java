@@ -1,12 +1,10 @@
 package com.example.appesame;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +32,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.auth.User;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -109,13 +106,13 @@ public class AddExamDialog extends DialogFragment {
         });
 
         //handling ok click
-        final TextInputLayout textInputLayout = view.findViewById(R.id.dialog_name_input_layout);
+        final TextInputLayout textInputLayout = view.findViewById(R.id.dialog_trec_input_layout);
         view.findViewById(R.id.dialog_ok_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                  CollectionReference examsCollection=db.collection("Users").document(user.getUid())
                         .collection("Exams");
-                final EditText nameEditText = view.findViewById(R.id.dialog_name_editText);
+                final EditText nameEditText = view.findViewById(R.id.dialog_trec_editText);
                 examName = nameEditText.getText()+"";
                 examName = examName.toUpperCase();
                 if (user ==null){

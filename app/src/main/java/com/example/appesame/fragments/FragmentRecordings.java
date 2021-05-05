@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -37,10 +39,8 @@ import com.example.appesame.BuildConfig;
 import com.example.appesame.R;
 import com.example.appesame.entities.StudiedItem;
 import com.example.appesame.uiutilities.AdapterItem;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,11 +48,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FileDownloadTask;
@@ -62,14 +60,14 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 import java.util.UUID;
 
 public class FragmentRecordings extends Fragment implements AddItemDialog.OnInputSelected {
 
     private static String FILE_TYPE = "audio/*";
     private static String STORAGE_FOLDER = "Recordings";
+    private static MediaPlayer mediaPlayer= null;
 
     private String examname, examId;
 
@@ -163,9 +161,9 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
                             storageRef.child(user.getUid() +"/"+examId+"/"+STORAGE_FOLDER+"/" + adapterItem.get(viewHolder.getAdapterPosition()).getItemId())
                                     .delete();
                             db.collection("Users").document(user.getUid())
-                                    .collection("Exams").document(examname)
+                                    .collection("Exams").document(examId)
                                     .collection(STORAGE_FOLDER)
-                                    .document(adapterItem.get(viewHolder.getAdapterPosition()).getItemName())
+                                    .document(adapterItem.get(viewHolder.getAdapterPosition()).getItemId())
                                     .delete();
                         }
                     });
@@ -211,7 +209,7 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
                 }
                 final File myFile = new File(storagePath, adapterItem.get(position).getItemId());
                 if (myFile.exists()) {
-                    fileOpener(myFile);
+                    startAudio(myFile,position);
                 }else if(isOnline(getContext())){
                     final StorageReference FileRef = storageRef.child(user.getUid()+"/"+examId+"/"+STORAGE_FOLDER+"/" + adapterItem.get(position).getItemId());
                     FileRef.getFile(myFile)
@@ -227,12 +225,13 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
                                 @Override
                                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                     progressIndicator.hide();
-                                    fileOpener(myFile);
+                                    startAudio(myFile,position);
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
+                                    progressIndicator.hide();
                                     Toast.makeText(getContext(), "Faliure loading file", Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -250,10 +249,11 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
                 final String itemId = adapterItem.get(position).getItemId();
                 final String itemName = adapterItem.get(position).getItemName();
                 final Dialog nameDialog = new Dialog(getContext());
+                nameDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 nameDialog.setContentView(R.layout.dialog_name_update);
-                final EditText editText =  nameDialog.findViewById(R.id.dialog_name_editText);
+                final EditText editText =  nameDialog.findViewById(R.id.dialog_trec_editText);
                 editText.setText(itemName);
-                final TextInputLayout textInputLayout =  nameDialog.findViewById(R.id.dialog_name_input_layout);
+                final TextInputLayout textInputLayout =  nameDialog.findViewById(R.id.dialog_trec_input_layout);
                 Button okButton = nameDialog.findViewById(R.id.name_ok);
                 okButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -404,15 +404,51 @@ public class FragmentRecordings extends Fragment implements AddItemDialog.OnInpu
     }
 
     //launching intent for file opening
-    private void fileOpener(File file){
-        Uri uri = FileProvider.getUriForFile(getContext(),
-                BuildConfig.APPLICATION_ID + ".provider",
-                file);
-        Intent openfile = new Intent(Intent.ACTION_VIEW);
-        openfile.setDataAndType(uri, FILE_TYPE);
-        openfile.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        Intent intent1 = Intent.createChooser(openfile, getString(R.string.openfile_chooser));
-        startActivity(intent1);
+    private void startAudio(File file, int adapterPosition){
+        if (mediaPlayer!=null){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+            if (adapterItem.get(adapterPosition).isPlaying) {
+                adapterItem.get(adapterPosition).isPlaying=false;
+                adapterItem.notifyItemChanged(adapterPosition);
+                return;
+            }
+            for (StudiedItem item :adapterItem.getDataList()) {
+                item.isPlaying=false;
+            }
+            adapterItem.notifyDataSetChanged();
+        }
+        adapterItem.get(adapterPosition).isPlaying=true;
+        adapterItem.notifyItemChanged(adapterPosition);
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(file.getAbsolutePath());
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (IOException e) {
+            Log.e("record Opener error", file.getAbsolutePath());
+        }
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                adapterItem.get(adapterPosition).isPlaying=false;
+                adapterItem.notifyItemChanged(adapterPosition);
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+        });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mediaPlayer != null)
+        {
+            mediaPlayer.release();
+            mediaPlayer=null;
+        }
     }
 
     //checking if there is connection

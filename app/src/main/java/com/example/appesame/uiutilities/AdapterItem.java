@@ -24,6 +24,7 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
 
     private List<StudiedItem> dataList;
     private OnItemClickListener mlistener;
+    public ImageButton selectItem;
 
     public AdapterItem(Context context) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
@@ -41,6 +42,11 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
     public void onBindViewHolder(@NonNull CViewHolder holder, int position) {
         holder.textView.setText(dataList.get(position).getItemName());
         holder.check.setChecked(dataList.get(position).isMemorized());
+        if (dataList.get(position).isPlaying){
+            holder.selectItem.setImageResource(R.drawable.ic_baseline_stop_24);
+        }else{
+            holder.selectItem.setImageResource(R.drawable.ic_baseline_arrow_forward_ios_24);
+        }
         if (holder.check.isChecked()){
             holder.chekedText.setVisibility(View.VISIBLE);
         }else {
@@ -82,7 +88,7 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
 
         TextView textView, chekedText;
         CheckBox check;
-        ImageButton selectItem;
+        public ImageButton selectItem;
 
 
         public CViewHolder(@NonNull View itemView, final OnItemClickListener listener) {

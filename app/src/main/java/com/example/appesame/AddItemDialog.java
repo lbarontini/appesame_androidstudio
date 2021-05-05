@@ -31,7 +31,7 @@ public class AddItemDialog extends DialogFragment {
     private Button actionSearch, actionOk, actionCancel;
     private TextView fileuriTV;
     private EditText filenameET;
-    TextInputLayout textInputLayout;
+    private TextInputLayout textInputLayout;
 
     private Intent searchfile;
     private Uri fileUri;
@@ -56,8 +56,8 @@ public class AddItemDialog extends DialogFragment {
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         fileuriTV=view.findViewById(R.id.dialog_uri_tv);
-        filenameET = view.findViewById(R.id.dialog_name_editText);
-        textInputLayout = view.findViewById(R.id.dialog_name_input_layout);
+        filenameET = view.findViewById(R.id.dialog_trec_editText);
+        textInputLayout = view.findViewById(R.id.dialog_trec_input_layout);
 
         actionSearch=view.findViewById(R.id.dialog_search_btn);
         actionOk=view.findViewById(R.id.dialog_ok_btn);
@@ -79,7 +79,6 @@ public class AddItemDialog extends DialogFragment {
         actionOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 final String itemNameNew = filenameET.getText()+"".trim();
                 if (itemNameNew.equals("")) {
                     textInputLayout.setError(getResources().getString(R.string.empty_name_field));
@@ -151,7 +150,6 @@ public class AddItemDialog extends DialogFragment {
         addItemDialog.setArguments(args);
         return addItemDialog;
     }
-
 
     //interface to override for getting the uri and the file name
     public interface OnInputSelected {

@@ -30,6 +30,8 @@
     <string name="welcome_message">Welcome!</string>
     <string name="cfu_update">How many CFU?</string>
     <string name="please_select_a_date">Please select a date</string>
+    <string name="no_recording_found">Please start recording</string>
+    <string name="welcome_msg">Welcome to Studid!</string>
 
 
 </resources>
