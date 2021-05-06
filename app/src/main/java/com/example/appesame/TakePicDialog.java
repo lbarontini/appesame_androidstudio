@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 public class TakePicDialog extends DialogFragment {
@@ -148,6 +149,8 @@ public class TakePicDialog extends DialogFragment {
                             picView.setImageBitmap(resource);
                         }
                     });
+        }else if (resultCode == RESULT_CANCELED){
+            getDialog().dismiss();
         }
     }
 
