@@ -28,5 +28,8 @@
     <string name="cfu_update">Quanti CFU?</string>
     <string name="please_select_a_date">Perfavore seleziona una data</string>
     <string name="no_recording_found">Perfavore inizia la registrazione</string>
-    <string name="welcome_msg">benvenuto in Studid!</string>
+    <string name="welcome_msg">Benvenuto in Studid!</string>
+    <string name="no_picture_found">Perfavore fai una foto</string>
+    <string name="memorized">Memorizzato!</string>
+    <string name="memorized_tip">Hai memorizzato questo item?</string>
 </resources>

@@ -17,6 +17,7 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -165,28 +166,11 @@ public class ItemChooserActivity extends AppCompatActivity {
         });
 
 
-            takeRec.setOnClickListener(v -> {
-                if (isOnline(getApplicationContext())) {
-                    TakeRecDialog takeRecDialog = new TakeRecDialog();
-                    Bundle bundle=new Bundle();
-                    bundle.putString("exam_id", examId);
-                    takeRecDialog.setArguments(bundle);
-                    takeRecDialog.setTargetFragment(selectedFragment, 1);
-                    takeRecDialog.show(getSupportFragmentManager(), "take_rec");
-                }else{
-                    AlertDialog.Builder alert = new MaterialAlertDialogBuilder(ItemChooserActivity.this);
-                    alert.setTitle(R.string.connection_title)
-                            .setMessage(R.string.connection_message)
-                            .show();
-                }
-            });
-
-
-        takePic.setOnClickListener(v -> {
+        takeRec.setOnClickListener(v -> {
             if (isOnline(getApplicationContext())) {
-                AddItemDialog addItemDialog = AddItemDialog.newInstance(fileType);
-                addItemDialog.setTargetFragment(selectedFragment, 1);
-                addItemDialog.show(getSupportFragmentManager(), "add_dialog");
+                TakeRecDialog takeRecDialog = TakeRecDialog.newInstance(examId);
+                takeRecDialog.setTargetFragment(selectedFragment, 1);
+                takeRecDialog.show(getSupportFragmentManager(), "take_rec");
             }else{
                 AlertDialog.Builder alert = new MaterialAlertDialogBuilder(ItemChooserActivity.this);
                 alert.setTitle(R.string.connection_title)
@@ -195,8 +179,18 @@ public class ItemChooserActivity extends AppCompatActivity {
             }
         });
 
-
-
+        takePic.setOnClickListener(v -> {
+            if (isOnline(getApplicationContext())) {
+                TakePicDialog takePicDialog = TakePicDialog.newInstance(examId);
+                takePicDialog.setTargetFragment(selectedFragment, 1);
+                takePicDialog.show(getSupportFragmentManager(), "take_pic");
+            }else{
+                AlertDialog.Builder alert = new MaterialAlertDialogBuilder(ItemChooserActivity.this);
+                alert.setTitle(R.string.connection_title)
+                        .setMessage(R.string.connection_message)
+                        .show();
+            }
+        });
     }
 
     @Override

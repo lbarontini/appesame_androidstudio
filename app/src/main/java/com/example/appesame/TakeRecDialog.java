@@ -180,4 +180,12 @@ public class TakeRecDialog extends DialogFragment {
             Log.e("on attach","exception"+e.getMessage());
         }
     }
+
+    public static TakeRecDialog newInstance(String examId) {
+        TakeRecDialog fragment = new TakeRecDialog();
+        Bundle args = new Bundle();
+        args.putString("examId", examId);
+        fragment.setArguments(args);
+        return fragment;
+    }
 }

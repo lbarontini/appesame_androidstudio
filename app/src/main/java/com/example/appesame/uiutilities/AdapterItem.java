@@ -5,13 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.appesame.R;
 import com.example.appesame.entities.StudiedItem;
 
@@ -24,9 +27,10 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
 
     private List<StudiedItem> dataList;
     private OnItemClickListener mlistener;
-    public ImageButton selectItem;
+    Context context;
 
     public AdapterItem(Context context) {
+        this.context=context;
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         dataList = new ArrayList<StudiedItem>();
     }
@@ -48,9 +52,13 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
             holder.selectItem.setImageResource(R.drawable.ic_baseline_arrow_forward_ios_24);
         }
         if (holder.check.isChecked()){
-            holder.chekedText.setVisibility(View.VISIBLE);
+            holder.check.setText(R.string.memorized);
         }else {
-            holder.chekedText.setVisibility(View.GONE);
+            holder.check.setText("");
+        }
+        if (dataList.get(position).picUrl!=null){
+            holder.ItemPicture.setVisibility(View.VISIBLE);
+            Glide.with(context).load(dataList.get(position).picUrl).into(holder.ItemPicture);
         }
     }
 
@@ -86,9 +94,10 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
 
     public static class CViewHolder extends RecyclerView.ViewHolder{
 
-        TextView textView, chekedText;
-        CheckBox check;
-        public ImageButton selectItem;
+        TextView textView;
+        private CheckedTextView check;
+        private ImageButton selectItem;
+        public ImageView ItemPicture;
 
 
         public CViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
@@ -96,8 +105,8 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.CViewHolder> {
 
             textView = itemView.findViewById(R.id.textView);
             check = itemView.findViewById(R.id.check);
-            chekedText = itemView.findViewById(R.id.checktext);
             selectItem = itemView.findViewById(R.id.select_arrow);
+            ItemPicture = itemView.findViewById(R.id.item_pic);
 
             selectItem.setOnClickListener(new View.OnClickListener() {
                 @Override

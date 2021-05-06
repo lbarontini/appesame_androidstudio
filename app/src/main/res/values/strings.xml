@@ -32,6 +32,7 @@
     <string name="please_select_a_date">Please select a date</string>
     <string name="no_recording_found">Please start recording</string>
     <string name="welcome_msg">Welcome to Studid!</string>
-
-
+    <string name="no_picture_found">Please take a photo</string>
+    <string name="memorized">Memorized!</string>
+    <string name="memorized_tip">Have you memorized this item?</string>
 </resources>

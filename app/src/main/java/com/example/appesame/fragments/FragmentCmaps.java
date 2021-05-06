@@ -341,8 +341,8 @@ public class FragmentCmaps extends Fragment implements AddItemDialog.OnInputSele
                 if (!IsSameName(filename)) {
                     // Register observers to listen for when the download is done or if it fails
                     final String uniqueID = UUID.randomUUID().toString();
-                    storageRef.child(user.getUid() + "/" + examId + "/" + STORAGE_FOLDER + "/" + uniqueID)
-                            .putFile(fileuri)
+                    StorageReference storagefolder = storageRef.child(user.getUid() + "/" + examId + "/" + STORAGE_FOLDER + "/" + uniqueID);
+                    storagefolder.putFile(fileuri)
                             .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
@@ -362,22 +362,28 @@ public class FragmentCmaps extends Fragment implements AddItemDialog.OnInputSele
                                 //if the download succeed register observer for database update
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    db.collection("Users").document(user.getUid())
-                                            .collection("Exams").document(examId)
-                                            .collection(STORAGE_FOLDER).document(uniqueID)
-                                            .set(new StudiedItem(uniqueID, filename), SetOptions.merge())
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    progressIndicator.hide();
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(getContext(), "faliure firestore", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
+                                    storagefolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            db.collection("Users").document(user.getUid())
+                                                    .collection("Exams").document(examId)
+                                                    .collection(STORAGE_FOLDER).document(uniqueID)
+                                                    .set(new StudiedItem(uniqueID, filename,uri.toString()), SetOptions.merge())
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            progressIndicator.hide();
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Toast.makeText(getContext(), "faliure firestore", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        }
+                                    });
+
                                 }
                             });
                     return nameState.OK;

@@ -16,13 +16,24 @@ public class StudiedItem {
     @PropertyName("memorized")
     public boolean isMemorized;
 
+    @PropertyName("picUrl")
+    public String picUrl;
+
     public boolean isPlaying;
     public StudiedItem() {}
 
     public StudiedItem(String itemId, String itemName) {
         this.itemId = itemId;
         this.itemName = itemName;
+        this.picUrl=null;
         this.isMemorized=false;
+    }
+    public StudiedItem(String itemId, String itemName, String picUrl) {
+        this.itemId = itemId;
+        this.itemName = itemName;
+        this.picUrl=picUrl;
+        this.isMemorized=false;
+
     }
 
     public String getItemId() {
