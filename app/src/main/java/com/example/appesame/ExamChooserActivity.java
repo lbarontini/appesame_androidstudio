@@ -38,6 +38,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.appesame.entities.StudiedExam;
+import com.example.appesame.dialogs.AddExamDialog;
 import com.example.appesame.uiutilities.AdapterExams;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -448,17 +449,19 @@ public class ExamChooserActivity extends AppCompatActivity {
         }
     }
     private void alertLogin() {
-        AlertDialog.Builder alert = new MaterialAlertDialogBuilder(ExamChooserActivity.this);
-        alert.setTitle(R.string.login_title);
-        alert.setMessage(R.string.alert_login);
-        alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.cancel();
-                Intent intentLogin = new Intent(ExamChooserActivity.this, LoginActivity.class);
-                startActivity(intentLogin);
-            }
-        });
-        alert.show();
+        Intent intentLogin = new Intent(ExamChooserActivity.this, LoginActivity.class);
+        startActivity(intentLogin);
+//        AlertDialog.Builder alert = new MaterialAlertDialogBuilder(ExamChooserActivity.this);
+//        alert.setTitle(R.string.login_title);
+//        alert.setMessage(R.string.alert_login);
+//        alert.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int whichButton) {
+//                dialog.cancel();
+//                Intent intentLogin = new Intent(ExamChooserActivity.this, LoginActivity.class);
+//                startActivity(intentLogin);
+//            }
+//        });
+//        alert.show();
     }
 
     private boolean isOnline(Context context) {

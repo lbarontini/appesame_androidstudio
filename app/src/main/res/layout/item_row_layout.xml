@@ -12,7 +12,8 @@
     android:id="@+id/exam_row_layout"
     android:layout_marginStart="5dp"
     android:layout_marginEnd="5dp"
-    android:layout_marginTop="5dp">
+    android:layout_marginTop="5dp"
+    android:tooltipText="@string/swipe_delete_tip">
 <androidx.constraintlayout.widget.ConstraintLayout
 
     android:id="@+id/row_layout"
@@ -36,7 +37,8 @@
         app:layout_constraintTop_toBottomOf="@id/item_pic"
         android:backgroundTint="@color/transparent"
         android:src="@drawable/ic_baseline_arrow_forward_ios_24"
-        android:tint="@color/colorTextPrimary"/>
+        android:tint="@color/colorTextPrimary"
+        android:tooltipText="@string/open_file_tip"/>
 
     <TextView
         android:id="@+id/textView"
@@ -49,7 +51,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/select_arrow"
         android:breakStrategy="simple"
-        android:layout_margin="7dp"/>
+        android:layout_margin="7dp"
+        android:tooltipText="@string/item_name_tip"/>
 
     <CheckedTextView
         android:id="@+id/check"
@@ -63,8 +66,5 @@
         app:layout_constraintBottom_toBottomOf="@id/select_arrow"
         app:layout_constraintEnd_toStartOf="@id/select_arrow"
         />
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

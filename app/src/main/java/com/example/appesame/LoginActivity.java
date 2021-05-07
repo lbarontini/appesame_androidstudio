@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private SignInButton signInButton;
     private Button logOutButton;
-    private TextView emailtv;
+    private TextView usernameTv;
     private ImageView proPicView;
     private ImageButton closeBtn;
 
@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         signInButton = findViewById(R.id.sign_in_button);
-        emailtv = findViewById(R.id.username);
+        usernameTv = findViewById(R.id.username);
         proPicView = findViewById(R.id.profile_picture);
         logOutButton= findViewById(R.id.logout_button);
         closeBtn= findViewById(R.id.dismiss);
@@ -115,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
             closeBtn.setVisibility(View.VISIBLE);
             signInButton.setVisibility(View.INVISIBLE);
             logOutButton.setVisibility(View.VISIBLE);
-            emailtv.setText(account.getDisplayName());
+            usernameTv.setText(account.getDisplayName());
             Glide
                     .with(this)
                     .load(account.getPhotoUrl().toString())
@@ -127,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
             closeBtn.setVisibility(View.INVISIBLE);
             signInButton.setVisibility(View.VISIBLE);
             logOutButton.setVisibility(View.INVISIBLE);
-            emailtv.setText(R.string.alert_login);
+            usernameTv.setText(R.string.alert_login);
             proPicView.setImageResource(R.drawable.ic_account_circle_light);
         }
 }

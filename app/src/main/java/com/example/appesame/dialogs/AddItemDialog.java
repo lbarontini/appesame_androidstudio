@@ -1,4 +1,4 @@
-package com.example.appesame;
+package com.example.appesame.dialogs;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.appesame.R;
 import com.google.android.material.textfield.TextInputLayout;
 
 import static android.app.Activity.RESULT_OK;

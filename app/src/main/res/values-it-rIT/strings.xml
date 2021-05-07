@@ -18,7 +18,7 @@
     <string name="empty_file_field">Perfavore scegliere un file</string>
     <string name="alert_login">Devi aver effettuato il login per utilizzare quest\'app.</string>
     <string name="openfile_chooser">Apri con</string>
-    <string name="overflow_name_field">massimo 10 caratteri perfavore</string>
+    <string name="overflow_name_field">massimo 20 caratteri perfavore</string>
     <string name="used_name">Nome già utilizzato</string>
     <string name="connection_title">Connessione necessaria</string>
     <string name="connection_message">Devi essere online per effettuare questa azione</string>
@@ -32,4 +32,14 @@
     <string name="no_picture_found">Perfavore fai una foto</string>
     <string name="memorized">Memorizzato!</string>
     <string name="memorized_tip">Hai memorizzato questo item?</string>
+    <string name="add_exam_tip">Aggiungi un esame</string>
+    <string name="swipe_delete_tip">Swipe a sinistra per cancellare</string>
+    <string name="exam_name_tip">Nome dell esame, clicca per cambiarlo</string>
+    <string name="exam_date_tip">"Data dell esame, clicca per cambiarla "</string>
+    <string name="exam_cfu_tip">CFU dell esame, clicca per camiarli</string>
+    <string name="open_file_tip">Apri il file associato</string>
+    <string name="item_name_tip">Nome dell item, clicca per cambiarlo</string>
+    <string name="add_a_file_tip">Aggiungi un file</string>
+    <string name="start_recording_tip">Comincia a registrare dall\'app</string>
+    <string name="take_picture_tip">Fai una foto</string>
 </resources>

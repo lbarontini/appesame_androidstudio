@@ -10,14 +10,11 @@ import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,10 +23,13 @@ import android.widget.ImageButton;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.appesame.dialogs.AddItemDialog;
 import com.example.appesame.fragments.FragmentCmaps;
 import com.example.appesame.fragments.FragmentExercises;
 import com.example.appesame.fragments.FragmentFlashcards;
 import com.example.appesame.fragments.FragmentRecordings;
+import com.example.appesame.dialogs.TakePicDialog;
+import com.example.appesame.dialogs.TakeRecDialog;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -50,12 +50,12 @@ public class ItemChooserActivity extends AppCompatActivity {
     private FragmentCmaps fragmentCmaps = new FragmentCmaps();
     private FragmentExercises fragmentExercise = new FragmentExercises();
     private String examName="", examId;
-    Date examDate;
+    private Date examDate;
     private int examCfu;
     private  String fileType = "application/pdf";
-    ImageButton takeRec,takePic;
+    private ImageButton takeRec,takePic;
 
-    Fragment selectedFragment = null;
+    private Fragment selectedFragment = null;
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {

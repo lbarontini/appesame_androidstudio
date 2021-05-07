@@ -1,11 +1,10 @@
-package com.example.appesame;
+package com.example.appesame.dialogs;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,9 +18,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.appesame.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -45,7 +44,6 @@ public class TakeRecDialog extends DialogFragment {
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
     boolean mStartRecording = true;
-    boolean mStartPlaying = true;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
     private String examId;
 

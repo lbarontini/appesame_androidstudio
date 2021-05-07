@@ -1,4 +1,4 @@
-package com.example.appesame;
+package com.example.appesame.dialogs;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.appesame.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -64,6 +65,7 @@ public class TakePicDialog extends DialogFragment {
         dispatchTakePictureIntent();
         View view = inflater.inflate(R.layout.dialog_take_pic, container, false);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         picView = view.findViewById(R.id.dialog_tpic_imageview);
         textInputLayout =view.findViewById(R.id.dialog_tpic_text_layout);
         filenameET = view.findViewById(R.id.dialog_tpic_editText);
@@ -140,15 +142,19 @@ public class TakePicDialog extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+//            Glide.with(getContext())
+//                    .asBitmap()
+//                    .load(photoFile.getAbsolutePath())
+//                    .into(new SimpleTarget<Bitmap>() {
+//                        @Override
+//                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+//                            picView.setImageBitmap(resource);
+//                        }
+//                    });
+            //todo test if works
             Glide.with(getContext())
-                    .asBitmap()
                     .load(photoFile.getAbsolutePath())
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            picView.setImageBitmap(resource);
-                        }
-                    });
+                    .into(picView);
         }else if (resultCode == RESULT_CANCELED){
             getDialog().dismiss();
         }

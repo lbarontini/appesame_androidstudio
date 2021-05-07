@@ -71,7 +71,7 @@
         android:tint="@color/colorIcons"
         app:layout_anchor="@+id/recicler_view_exams"
         app:layout_anchorGravity="end|bottom"
-        android:tooltipText="Add a new exam"/>
+        android:tooltipText="@string/add_exam_tip"/>
 
     <ImageView
         android:id="@+id/empty_recycler_image"

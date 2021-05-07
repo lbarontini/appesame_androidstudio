@@ -33,9 +33,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.appesame.AddItemDialog;
 import com.example.appesame.BuildConfig;
 import com.example.appesame.R;
+import com.example.appesame.dialogs.AddItemDialog;
 import com.example.appesame.entities.StudiedItem;
 import com.example.appesame.uiutilities.AdapterItem;
 import com.google.android.gms.tasks.OnFailureListener;

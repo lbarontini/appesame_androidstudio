@@ -1,4 +1,4 @@
-package com.example.appesame;
+package com.example.appesame.dialogs;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.appesame.R;
 import com.example.appesame.entities.StudiedExam;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

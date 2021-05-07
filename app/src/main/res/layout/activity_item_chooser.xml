@@ -70,7 +70,8 @@
         android:src="@drawable/ic_add_black_24dp"
         android:tint="@color/colorIcons"
         app:layout_anchor="@+id/fragment_container"
-        app:layout_anchorGravity="end|bottom" />
+        app:layout_anchorGravity="end|bottom"
+        android:tooltipText="@string/add_a_file_tip"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/record_button_m"
@@ -84,7 +85,8 @@
         android:tint="@color/colorIcons"
         app:layout_anchor="@+id/fragment_container"
         app:layout_anchorGravity="end|bottom"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:tooltipText="@string/start_recording_tip"/>
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/picture_button_m"
         android:layout_width="60dp"
@@ -97,6 +99,7 @@
         android:tint="@color/colorIcons"
         app:layout_anchor="@+id/fragment_container"
         app:layout_anchorGravity="end|bottom"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:tooltipText="@string/take_picture_tip"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
