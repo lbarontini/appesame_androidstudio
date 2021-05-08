@@ -42,4 +42,5 @@
     <string name="add_a_file_tip">Aggiungi un file</string>
     <string name="start_recording_tip">Comincia a registrare dall\'app</string>
     <string name="take_picture_tip">Fai una foto</string>
+    <string name="save_btn">Salva</string>
 </resources>

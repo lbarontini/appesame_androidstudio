@@ -154,6 +154,8 @@ public class TakePicDialog extends DialogFragment {
             //todo test if works
             Glide.with(getContext())
                     .load(photoFile.getAbsolutePath())
+                    .override(640,640)
+                    .fitCenter()
                     .into(picView);
         }else if (resultCode == RESULT_CANCELED){
             getDialog().dismiss();
