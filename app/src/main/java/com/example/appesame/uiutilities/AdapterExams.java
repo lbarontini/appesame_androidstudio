@@ -50,9 +50,9 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ExamViewHolder holder, int position) {
-        StudiedExam exam =studiedExamList.get(position);
+        StudiedExam exam = studiedExamList.get(position);
         holder.examNameTV.setText(exam.getExamName());
-        holder.cfuButton.setText(exam.getCfu()+"");
+        holder.cfuButton.setText(exam.getCfu() + "");
 
         DateFormat df = new SimpleDateFormat("dd/MMM/yy", Locale.ITALY);
         String fdate = df.format(exam.getDate().toDate());
@@ -60,20 +60,14 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
 
         DateTime examDT = new DateTime(exam.getDate().toDate());
         Days result = Days.daysBetween(DateTime.now(), examDT);
-        if (examDT.isBeforeNow())
-        {
-            holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorTextPrimary));
-        } else if (result.getDays() >= 0 && result.getDays() <= 2)
-        {
+        if (result.getDays() >= 0 && result.getDays() <= 2) {
             holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorAccent));
-        }
-        else if (result.getDays() >= 15)
-        {
-            holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorPrimarylight));
-        }
-        else if (result.getDays() > 2)
-        {
+        } else if (result.getDays() >= 15) {
+            holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorTextPrimary));
+        } else if (result.getDays() > 2) {
             holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
+        } else if (examDT.isBeforeNow()) {
+            holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorTextSecondary));
         }
     }
 

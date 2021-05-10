@@ -99,7 +99,9 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         updateUI(user);
                         Toast.makeText(getApplicationContext(), R.string.welcome_message, Toast.LENGTH_SHORT).show();
-                        finish();
+                        Intent intent = new Intent(LoginActivity.this, ExamChooserActivity.class);
+                        startActivity(intent);
+
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w("googlesignin", "signInWithCredential:failure", task.getException());
@@ -116,8 +118,7 @@ public class LoginActivity extends AppCompatActivity {
             signInButton.setVisibility(View.INVISIBLE);
             logOutButton.setVisibility(View.VISIBLE);
             usernameTv.setText(account.getDisplayName());
-            Glide
-                    .with(this)
+            Glide.with(this)
                     .load(account.getPhotoUrl().toString())
                     .placeholder(R.drawable.ic_account_circle_light)
                     .centerCrop()

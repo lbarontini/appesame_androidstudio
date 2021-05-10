@@ -83,7 +83,6 @@ public class ExamChooserActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean flag=false;
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -93,7 +92,6 @@ public class ExamChooserActivity extends AppCompatActivity {
             setProPic(item);
             if (user != null) {
                 // User is signed in
-                flag=false;
                 db.collection("Users").document(user.getUid())
                         .collection("Exams")
                         .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -135,10 +133,8 @@ public class ExamChooserActivity extends AppCompatActivity {
                             }
                         });
 
-            } else if (!flag) {
-                flag = true;
+            } else {
                 alertLogin();
-            }else {
                 imageView.setVisibility(View.VISIBLE);
                 recyclerViewExams.setVisibility(View.INVISIBLE);
             }
@@ -148,6 +144,9 @@ public class ExamChooserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (FirebaseAuth.getInstance().getCurrentUser()== null)
+            alertLogin();
+
         setContentView(R.layout.activity_exam_chooser);
 
         imageView = findViewById(R.id.empty_recycler_image);
@@ -448,6 +447,7 @@ public class ExamChooserActivity extends AppCompatActivity {
             item.setIcon(R.drawable.ic_account_circle_light);
         }
     }
+
     private void alertLogin() {
         Intent intentLogin = new Intent(ExamChooserActivity.this, LoginActivity.class);
         startActivity(intentLogin);
