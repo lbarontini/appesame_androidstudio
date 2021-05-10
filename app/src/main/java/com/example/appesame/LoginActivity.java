@@ -2,6 +2,7 @@ package com.example.appesame;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -26,6 +27,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -83,9 +85,14 @@ public class LoginActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isOnline(getApplicationContext())) {
+                if (isOnline(LoginActivity.this)) {
                     Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                     startActivityForResult(signInIntent, RC_SIGN_IN);
+                }else {
+                    AlertDialog.Builder alert = new MaterialAlertDialogBuilder(LoginActivity.this);
+                    alert.setTitle(R.string.connection_title)
+                            .setMessage(R.string.connection_message)
+                            .show();
                 }
             }
         });
@@ -110,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w("googlesignin", "signInWithCredential:failure", task.getException());
-                        Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Firebase Autentication Failed.", Toast.LENGTH_SHORT).show();
                         updateUI(null);
                     }
                 }
@@ -151,6 +158,7 @@ public class LoginActivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
+                Toast.makeText(getApplicationContext(), "google Sign in Failed", Toast.LENGTH_SHORT).show();
                 Log.w("googlesignin", "Google sign in failed", e);
             }
         }
