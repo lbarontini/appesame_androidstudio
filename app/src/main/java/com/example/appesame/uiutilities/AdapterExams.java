@@ -60,14 +60,14 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
 
         DateTime examDT = new DateTime(exam.getDate().toDate());
         Days result = Days.daysBetween(DateTime.now(), examDT);
-        if (result.getDays() >= 0 && result.getDays() <= 2) {
+         if (examDT.isBeforeNow()) {
+            holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorTextSecondary));
+        }else if (result.getDays() >= 0 && result.getDays() <= 2) {
             holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorAccent));
         } else if (result.getDays() >= 15) {
             holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorTextPrimary));
         } else if (result.getDays() > 2) {
             holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
-        } else if (examDT.isBeforeNow()) {
-            holder.examDateTV.setTextColor(context.getResources().getColor(R.color.colorTextSecondary));
         }
     }
 
@@ -76,7 +76,6 @@ public class AdapterExams extends RecyclerView.Adapter<AdapterExams.ExamViewHold
         if (studiedExamList!=null)
             return studiedExamList.size();
         else return 0;
-
     }
 
     public void setDataList(List<StudiedExam> dataList) {

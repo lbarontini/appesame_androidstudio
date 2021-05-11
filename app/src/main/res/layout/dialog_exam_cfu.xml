@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/dialog_rounded_bg">
+
 <com.google.android.material.textview.MaterialTextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -13,7 +14,7 @@
     android:text="@string/cfu_update"
     android:textSize="20sp"
     android:textColor="@color/colorPrimary"
-    app:layout_constraintBottom_toTopOf="@id/cfu_layout"
+    app:layout_constraintTop_toTopOf="@id/cfu_layout"
     android:layout_marginTop="5dp"/>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cfu_layout"

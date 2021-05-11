@@ -46,4 +46,5 @@
     <string name="start_recording_tip">Start in-app recording</string>
     <string name="take_picture_tip">Take a picture</string>
     <string name="save_btn">Save</string>
+    <string name="exam_arrow_tooltip">Select this exam</string>
 </resources>

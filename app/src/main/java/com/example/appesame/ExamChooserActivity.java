@@ -312,6 +312,9 @@ public class ExamChooserActivity extends AppCompatActivity {
                             calendar.set(Calendar.YEAR, year);
                             calendar.set(Calendar.MONTH, month);
                             calendar.set(Calendar.DATE, dayOfMonth);
+                            calendar.set(Calendar.HOUR, 23);
+                            calendar.set(Calendar.MINUTE, 59);
+                            calendar.set(Calendar.SECOND, 59);
                             Timestamp timestamp = new Timestamp(calendar.getTime());
 
                             DocumentReference exam =db.collection("Users").document(user.getUid())

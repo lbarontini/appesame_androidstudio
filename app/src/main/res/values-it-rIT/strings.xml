@@ -43,4 +43,5 @@
     <string name="start_recording_tip">Comincia a registrare dall\'app</string>
     <string name="take_picture_tip">Fai una foto</string>
     <string name="save_btn">Salva</string>
+    <string name="exam_arrow_tooltip">Seleziona questo esame</string>
 </resources>

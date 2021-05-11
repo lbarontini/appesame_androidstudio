@@ -77,6 +77,9 @@ public class AddExamDialog extends DialogFragment {
                         calendar.set(Calendar.YEAR, year);
                         calendar.set(Calendar.MONTH, month);
                         calendar.set(Calendar.DATE, dayOfMonth);
+                        calendar.set(Calendar.HOUR, 23);
+                        calendar.set(Calendar.MINUTE, 59);
+                        calendar.set(Calendar.SECOND, 59);
                         date = calendar.getTime();
                         DateFormat format = new SimpleDateFormat("dd/MM/yy");
                         buttondate. setText(format.format(date));
